@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="brainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a78bfa;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Brain icon -->
+  <path d="M50 15 C35 15 25 25 25 35 C25 40 27 45 30 48 C28 50 27 53 27 56 C27 62 32 67 38 67 C40 67 42 66 44 65 C45 70 48 75 53 77 C55 78 57 78 59 77 C64 75 67 70 68 65 C70 66 72 67 74 67 C80 67 85 62 85 56 C85 53 84 50 82 48 C85 45 87 40 87 35 C87 25 77 15 62 15 C58 15 54 16 51 18 C50 16 50 15 50 15 Z" 
+        fill="url(#brainGradient)" 
+        stroke="#7c3aed" 
+        stroke-width="2"/>
+  
+  <!-- Brain details -->
+  <path d="M40 35 Q45 30 50 35" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M60 35 Q55 30 50 35" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M35 50 Q40 45 45 50" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M65 50 Q60 45 55 50" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- Heart symbol (mental health care) -->
+  <circle cx="50" cy="55" r="8" fill="#f1f5f9" opacity="0.9"/>
+  <path d="M50 52 L48 54 L50 56 L52 54 Z" fill="#8b5cf6"/>
+</svg>
