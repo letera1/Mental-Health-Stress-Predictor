@@ -135,5 +135,6 @@ Contributions are welcome! Please fork the repository and submit a pull request 
 ---
 
 <div align="center">
-    Made with ❤️ for Mental Health Awareness
+    Made for Mental Health Awareness
+
 </div>
