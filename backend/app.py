@@ -5,6 +5,19 @@ import numpy as np
 import pandas as pd
 import os
 
+"""
+=============================================================================
+MindCare AI - Backend API
+=============================================================================
+This module serves as the entry point for the Flask-based REST API.
+It handles bridging the React frontend with the Scikit-Learn Ensemble Model.
+
+Endpoints:
+    - GET /        : Health check
+    - POST /predict: Inference endpoint expecting JSON data
+=============================================================================
+"""
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 try:

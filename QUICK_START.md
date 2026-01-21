@@ -1,207 +1,132 @@
-# MindCare - Quick Start Guide
+# ⚡ Quick Start: MindCare Inference Engine & UI
 
-## Getting Started
+This guide provides instructions for deploying the **MindCare AI** full-stack application locally. The system consists of a Python-based inference server (Flask) and a React client interface.
 
-### Prerequisites
-- Node.js (v16 or higher)
-- Python 3.8+
-- pip (Python package manager)
-
-### Backend Setup
-
-1. **Navigate to backend directory**
-   ```bash
-   cd backend
-   ```
-
-2. **Install Python dependencies**
-   ```bash
-   pip install flask flask-cors scikit-learn==1.6.1 pandas numpy joblib
-   ```
-   
-   **Note**: If you have scikit-learn 1.8.0, the app will automatically use the Random Forest fallback model.
-
-3. **Start the Flask server**
-   ```bash
-   python app.py
-   ```
-   
-   The backend will run on `http://localhost:5000`
-
-### Frontend Setup
-
-1. **Navigate to frontend directory**
-   ```bash
-   cd frontend/mental-health-frontend
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Start the development server**
-   ```bash
-   npm run dev
-   ```
-   
-   The frontend will run on `http://localhost:5173` (or another port if 5173 is busy)
-
-### Access the Application
-
-Open your browser and navigate to the URL shown in the terminal (typically `http://localhost:5173`)
-
-## 📁 Project Structure
-
-```
-mental-health-app/
-├── backend/
-│   ├── app.py                          # Flask API server
-│   ├── models/                         # ML models directory
-│   │   ├── mental_health_model_ensemble_soft.pkl  # Ensemble model (primary)
-│   │   ├── mental_health_model_ensemble_hard.pkl  # Hard voting ensemble
-│   │   └── mental_health_model.pkl                # Base model
-│   ├── datapreprocessing.ipynb         # ML model training
-│   ├── mental_health_dataset.csv       # Training data
-│   ├── random_forest_mentalhealth.pkl  # Fallback model
-│   └── scaler.pkl                      # Data scaler
-│
-└── frontend/
-    └── mental-health-frontend/
-        ├── src/
-        │   ├── Components/
-        │   │   ├── NavBar/             # Navigation component
-        │   │   ├── Footer/             # Footer component
-        │   │   └── ResultCard/         # Result display component
-        │   ├── Pages/
-        │   │   ├── Home/               # Landing page
-        │   │   ├── predict/            # Assessment form
-        │   │   ├── resource/           # Resources page
-        │   │   └── About/              # About page
-        │   ├── App.jsx                 # Main app component
-        │   ├── App.css                 # Global styles
-        │   ├── index.css               # CSS variables & reset
-        │   └── main.jsx                # Entry point
-        ├── index.html                  # HTML template
-        ├── package.json                # Dependencies
-        └── vite.config.js              # Vite configuration
-```
-
-## Key Features
-
-### 1. Home Page
-- Hero section with call-to-action
-- Feature highlights
-- Statistics showcase
-- Responsive design
-
-### 2. Assessment Page
-- Multi-section form
-- Progress tracking
-- Real-time validation
-- Instant results
-
-### 3. Resources Page
-- Emergency contacts (988, Crisis Text Line)
-- National mental health organizations
-- Campus resources
-- Categorized information
-
-### 4. About Page
-- Mission statement
-- Privacy information
-- Technology stack
-- Disclaimers
-
-## Configuration
-
-### Backend Configuration (app.py)
-- Default port: 5000
-- CORS enabled for frontend communication
-- Primary model: `models/mental_health_model_ensemble_soft.pkl` (Ensemble Learning)
-- Fallback model: `random_forest_mentalhealth.pkl` (Random Forest)
-- Scaler: `scaler.pkl`
-- **Note**: Requires scikit-learn 1.6.1 for ensemble model; automatically falls back to Random Forest with 1.8.0
-
-### Frontend Configuration (vite.config.js)
-- Default port: 5173
-- API endpoint: `http://localhost:5000`
-
-## Assessment Parameters
-
-The assessment form collects the following data:
-- **Personal**: Age, Gender, GPA
-- **Mental Health**: Stress Level, Anxiety Score, Depression Score, Mood, Sentiment Score
-- **Lifestyle**: Sleep Hours, Steps Per Day
-
-The ensemble machine learning model uses soft voting to combine predictions from multiple algorithms for improved accuracy.
+![Environment](https://img.shields.io/badge/Environment-Dev-lightgrey)
+![Platform](https://img.shields.io/badge/Platform-Win%20%7C%20Mac%20%7C%20Linux-lightgrey)
 
 ---
 
-## UI/UX Features
+## 🔧 Environment Prerequisites
 
-### Design System
-- Modern color palette
-- Consistent spacing and typography
-- Smooth animations
-- Responsive layouts
+Ensure your development environment has the following runtimes validated:
 
-### Accessibility
-- Semantic HTML
-- ARIA labels
-- Keyboard navigation
-- High contrast colors
+*   **Python Runtime**: v3.9+ (Recommended: 3.10)
+*   **Node Runtime**: v18 LTS or higher
+*   **Package Managers**: `pip` (Python), `npm` or `yarn` (JS)
+*   **Virtual Environment**: `venv` or `conda` (recommended for isolation)
 
-### Responsive Design
-- Mobile-first approach
-- Breakpoint at 768px
-- Touch-friendly buttons
-- Optimized layouts
+---
 
-## Troubleshooting
+## 🖥️ Backend Deployment (Inference Server)
 
-### Backend Issues
+The backend exposes a RESTful API serving the **Soft Voting Ensemble Classifier**.
 
-**Port already in use:**
+### 1. Initialize Virtual Environment
+It is best practice to run ML workloads in isolated environments to avoid dependency conflicts (specifically scikit-learn versions).
+
 ```bash
-# Change port in app.py
-app.run(debug=True, port=5001)
+cd backend
+
+# Create virtual environment
+python -m venv venv
+
+# Activate (Windows)
+.\venv\Scripts\activate
+
+# Activate (Mac/Linux)
+source venv/bin/activate
 ```
 
-**Module not found:**
+### 2. Install ML Dependencies
+**Critical**: The serialized model artifacts require a specific `scikit-learn` version for deserialization compatibility.
+
 ```bash
 pip install -r requirements.txt
+# OR manual install
+pip install flask flask-cors scikit-learn==1.6.1 pandas numpy joblib
 ```
 
-**Model file not found:**
-Ensure model files are in the correct locations:
-- Primary: `backend/models/mental_health_model_ensemble_soft.pkl`
-- Fallback: `backend/random_forest_mentalhealth.pkl`
-- Scaler: `backend/scaler.pkl`
+### 3. Launch API Server
+The server initializes the inference pipeline upon startup.
 
-**Scikit-learn version mismatch:**
 ```bash
-# For ensemble model support
-pip install scikit-learn==1.6.1
-
-# Or let the app use Random Forest fallback with any version
+python app.py
 ```
+> **Status Check**: The server runs on `http://localhost:5001`. A `GET /` request should return a 200 OK status.
 
-### Frontend Issues
+---
 
-**Port already in use:**
-Vite will automatically use the next available port
+## 🎨 Frontend Deployment (Client UI)
 
-**API connection error:**
-- Ensure backend is running on port 5000
-- Check CORS configuration in app.py
-- Verify API endpoint in Predict.jsx
+The frontend is a Vite-optimized React application interfacing with the Flask API.
 
-**Dependencies error:**
+### 1. Install Node Modules
+
 ```bash
-rm -rf node_modules package-lock.json
+cd frontend
+
+# Install clean dependencies
+npm ci
+# OR
 npm install
 ```
+
+### 2. Start Dev Server
+
+```bash
+npm run dev
+```
+> **Access**: The application will be available at `http://localhost:5173`. Make sure the backend port matches the API calls in `frontend/src/Pages/predict/Predict.jsx` (default 5001).
+
+---
+
+## 🧪 API Specification
+
+### Endpoint: `/predict`
+*   **Method**: `POST`
+*   **Content-Type**: `application/json`
+
+#### Request Payload
+```json
+{
+  "Age": 21,
+  "Gender": 0,                // 0: Male, 1: Female
+  "GPA": 3.8,
+  "Stress_Level": 2,          // 0-4 Scale
+  "Anxiety_Score": 10,        // GAD-7 Scale equivalent
+  "Depression_Score": 5,      // PHQ-9 Scale equivalent
+  "Sleep_Hours": 7.5,
+  "Steps_Per_Day": 6000,
+  "Mood_Description": 2,      // Encoded categorical
+  "Sentiment_Score": 0.8
+}
+```
+
+#### Response Payload
+```json
+{
+  "prediction": 0            // Class Label: 0 (Good), 1 (Moderate), 2 (Poor)
+}
+```
+
+---
+
+## 🛠 Troubleshooting
+
+### 🐍 Serialization Errors (`ModuleNotFoundError` / `ValueError`)
+*   **Symptom**: `UserWarning: Trying to unpickle estimator... version mismatch`
+*   **Cause**: The model was trained on `scikit-learn==1.6.1`. Attempting to load with v1.3 or v1.7 will fail.
+*   **Fix**: `pip install --force-reinstall scikit-learn==1.6.1`
+
+### 🌐 CORS / Connection Refused
+*   **Symptom**: Frontend shows "Fetch Error".
+*   **Fix**: Ensure `app.py` has `CORS(app)` initialized and both servers are running. Check `http://127.0.0.1:5001` vs `localhost`.
+
+### 📉 Model Inference Issues
+*   **Symptom**: 500 Internal Server Error regarding "Feature mismatch".
+*   **Fix**: The input features order must match the training/pipeline schema exactly as defined in `app.py::FEATURES`.
+
 
 ## Development Tips
 
