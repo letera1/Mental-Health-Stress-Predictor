@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Sidebar from "./Components/Sidebar/Sidebar";
-import Home from "./Pages/Home/Home";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import Predict from "./Pages/predict/Predict";
 import About from "./Pages/About/About";
@@ -14,11 +13,12 @@ function App() {
         <Sidebar />
         <main className="main-content">
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/" element={<Dashboard />} />
             <Route path="/predict" element={<Predict />} />
             <Route path="/about" element={<About />} />
             <Route path="/resources" element={<Resource />} />
+            <Route path="/settings" element={<Dashboard />} />
+            <Route path="/notifications" element={<Dashboard />} />
           </Routes>
         </main>
       </div>
