@@ -1,6 +1,6 @@
 # MindCare AI Docker Overview
 
-A clean deployment path for this project is now available with a single full-stack image.
+A clean, production-style deployment path for this project is available with a single full-stack image.
 
 ## Deployment Snapshot
 
@@ -13,19 +13,48 @@ A clean deployment path for this project is now available with a single full-sta
 ## Image and Registry
 
 - Image name: tuta699/mental-health-stress-detector
-- Requested tag example: tagname
+- Tag: choose your own (examples: `tagname`, `v2.1.0`, `latest`)
 
-## Fast Path
+Note: `tagname` is just an example tag. If you try to `docker run ...:tagname` before you build/push it, Docker will (correctly) say “not found”.
 
-1. Build image:
-   docker build -t tuta699/mental-health-stress-detector:tagname .
+## Fast Path (Build → Run)
 
-2. Run container:
-   docker run -d --name mindcare-app -p 5001:5001 tuta699/mental-health-stress-detector:tagname
+1. Build the image (run this from the repo root; the trailing `.` is required):
 
-3. Push to Docker Hub:
-   docker login
-   docker push tuta699/mental-health-stress-detector:tagname
+  ```bash
+  docker build -t tuta699/mental-health-stress-detector:tagname .
+  ```
+
+2. Run the container:
+
+  ```bash
+  docker run -d --name mindcare-app -p 5001:5001 tuta699/mental-health-stress-detector:tagname
+  ```
+
+  Open: http://localhost:5001
+
+If you get a “name is already in use” error:
+
+```bash
+docker rm -f mindcare-app
+```
+
+## Push to Docker Hub
+
+Build locally first, then push:
+
+```bash
+docker login
+docker build -t tuta699/mental-health-stress-detector:tagname .
+docker push tuta699/mental-health-stress-detector:tagname
+```
+
+Run from Docker Hub (after pushing):
+
+```bash
+docker pull tuta699/mental-health-stress-detector:tagname
+docker run -d --name mindcare-app -p 5001:5001 tuta699/mental-health-stress-detector:tagname
+```
 
 ## Compose Path
 

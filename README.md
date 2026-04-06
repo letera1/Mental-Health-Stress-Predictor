@@ -196,6 +196,10 @@ Detailed guide: [DOCKER_OVERVIEW.md](DOCKER_OVERVIEW.md)
 
 From the project root:
 
+> Important:
+> - `tagname` is an example tag. Replace it with your real tag (e.g. `v2.1.0` or `latest`).
+> - The trailing `.` is required (it is the build context path).
+
 ```bash
 docker build -t tuta699/mental-health-stress-detector:tagname .
 ```
@@ -206,13 +210,27 @@ docker build -t tuta699/mental-health-stress-detector:tagname .
 docker run -d --name mindcare-app -p 5001:5001 tuta699/mental-health-stress-detector:tagname
 ```
 
+If you get a “name is already in use” error, remove the old container and re-run:
+
+```bash
+docker rm -f mindcare-app
+```
+
 Open: `http://localhost:5001`
 
 ### Push to Docker Hub
 
 ```bash
 docker login
+docker build -t tuta699/mental-health-stress-detector:tagname .
 docker push tuta699/mental-health-stress-detector:tagname
+```
+
+If you want to run the image from Docker Hub (without building locally), push it first, then:
+
+```bash
+docker pull tuta699/mental-health-stress-detector:tagname
+docker run -d --name mindcare-app -p 5001:5001 tuta699/mental-health-stress-detector:tagname
 ```
 
 ### Deploy with Docker Compose
