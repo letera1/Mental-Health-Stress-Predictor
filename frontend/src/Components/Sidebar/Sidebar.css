@@ -4,13 +4,14 @@
   top: 0;
   height: 100vh;
   width: 260px;
-  background: #1e293b;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border-primary);
   display: flex;
   flex-direction: column;
   z-index: 1000;
   overflow-y: auto;
   overflow-x: hidden;
-  transition: background var(--transition-base);
+  transition: all var(--transition-base);
 }
 
 .sidebar::-webkit-scrollbar {
@@ -22,30 +23,31 @@
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.3);
+  background: var(--neutral-600);
   border-radius: 2px;
 }
 
 /* Sidebar Header */
 .sidebar-header {
-  padding: 2rem 1.5rem;
+  padding: var(--space-6) var(--space-5);
+  border-bottom: 1px solid var(--border-primary);
 }
 
 .sidebar-brand {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--space-3);
 }
 
 .brand-icon {
   font-size: 1.75rem;
+  filter: drop-shadow(0 2px 8px rgba(99, 102, 241, 0.4));
 }
 
 .brand-text {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  background: linear-gradient(135deg, #6366f1, #a855f7);
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  background: linear-gradient(135deg, var(--primary-400), var(--accent-purple));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -54,23 +56,26 @@
 /* Navigation */
 .sidebar-nav {
   flex: 1;
-  padding: 1rem 0;
+  padding: var(--space-4) 0;
 }
 
 .nav-list {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
 }
 
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem 1.5rem;
-  color: #94a3b8;
-  font-size: 0.95rem;
-  font-weight: 500;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
   transition: all var(--transition-fast);
   cursor: pointer;
   position: relative;
@@ -78,24 +83,43 @@
   border-left: 3px solid transparent;
 }
 
+.nav-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--primary-500);
+  transform: scaleY(0);
+  transition: transform var(--transition-fast);
+}
+
 .nav-item:hover {
-  background: rgba(99, 102, 241, 0.05);
+  background: var(--bg-tertiary);
   color: var(--text-primary);
 }
 
 .nav-item.active {
-  background: rgba(99, 102, 241, 0.1);
-  color: #6366f1;
-  border-left-color: #6366f1;
+  background: linear-gradient(90deg, 
+    rgba(99, 102, 241, 0.1) 0%, 
+    transparent 100%
+  );
+  color: var(--primary-400);
+  font-weight: var(--font-semibold);
+}
+
+.nav-item.active::before {
+  transform: scaleY(1);
 }
 
 .nav-icon {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
+  width: 20px;
 }
 
 .nav-label {
@@ -109,19 +133,21 @@
 .mobile-sidebar-toggle {
   display: none;
   position: fixed;
-  top: 1rem;
-  left: 1rem;
+  top: var(--space-4);
+  left: var(--space-4);
   width: 48px;
   height: 48px;
   background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-primary);
   border-radius: var(--radius-lg);
-  color: var(--primary-color);
+  color: var(--primary-500);
   font-size: 1.25rem;
   cursor: pointer;
   z-index: 1001;
   box-shadow: var(--shadow-lg);
   transition: all var(--transition-fast);
+  align-items: center;
+  justify-content: center;
 }
 
 .mobile-sidebar-toggle:hover {
@@ -137,20 +163,17 @@
 @media (max-width: 768px) {
   .mobile-sidebar-toggle {
     display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   .sidebar {
     transform: translateX(-100%);
-    width: 260px;
     box-shadow: none;
     transition: transform var(--transition-base);
   }
 
   .sidebar.mobile-open {
     transform: translateX(0);
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5);
+    box-shadow: 4px 0 20px var(--overlay);
   }
 
   .sidebar-overlay {
@@ -160,8 +183,8 @@
     left: 0;
     width: 100%;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(5px);
+    background: var(--overlay);
+    backdrop-filter: blur(4px);
     z-index: 999;
   }
 }
