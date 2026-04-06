@@ -1,110 +1,156 @@
 import { Link } from "react-router-dom";
-import { FaArrowRight, FaShieldAlt, FaBrain, FaChartLine, FaUsers } from "react-icons/fa";
+import { FaArrowRight, FaShieldAlt, FaBrain, FaChartLine, FaUsers, FaHeart, FaStar } from "react-icons/fa";
+import { motion } from "framer-motion";
 import "./Home.css";
 
 export default function Home() {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.2 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 30, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100 }
+    }
+  };
+
   return (
     <div className="home-page">
-      <section className="hero-section">
+      <motion.section 
+        className="hero-section"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
         <div className="hero-content">
-          <div className="hero-badge">
-           
-            <span>Mental Health & Stress Prediction in Students</span>
-          </div>
+          <motion.div className="hero-badge" variants={itemVariants}>
+            <FaStar className="badge-icon" />
+            <span>Mental Health & Stress Prediction for Students</span>
+          </motion.div>
           
-          <h1 className="hero-title">
+          <motion.h1 className="hero-title" variants={itemVariants}>
             Welcome to <span className="gradient-text">MindCare</span>
-          </h1>
+          </motion.h1>
           
-          <p className="hero-description">
-            A simple tool to help students understand their mental health better. 
-            Answer a few questions and get instant insights about your wellbeing.
-          </p>
+          <motion.p className="hero-description" variants={itemVariants}>
+            Your personal mental wellness companion powered by AI. Get instant insights 
+            about your wellbeing through our advanced assessment tool.
+          </motion.p>
           
-          <div className="hero-actions">
-            <Link to="/predict" className="btn btn-primary">
-              Take Assessment
+          <motion.div className="hero-actions" variants={itemVariants}>
+            <Link to="/dashboard" className="btn btn-primary">
+              <FaChartLine />
+              View Dashboard
               <FaArrowRight className="btn-icon" />
             </Link>
-            <Link to="/resources" className="btn btn-secondary">
-              Resources
+            <Link to="/predict" className="btn btn-secondary">
+              Take Assessment
             </Link>
-          </div>
+          </motion.div>
           
-          <div className="hero-stats">
+          <motion.div className="hero-stats" variants={itemVariants}>
             <div className="stat-item">
               <FaShieldAlt className="stat-icon" />
               <div className="stat-content">
                 <span className="stat-number">100%</span>
-                <span className="stat-label">Private</span>
+                <span className="stat-label">Private & Secure</span>
               </div>
             </div>
             <div className="stat-item">
-              <FaChartLine className="stat-icon" />
+              <FaBrain className="stat-icon" />
               <div className="stat-content">
-                <span className="stat-number">Quick</span>
-                <span className="stat-label">Results</span>
+                <span className="stat-number">AI</span>
+                <span className="stat-label">Powered</span>
               </div>
             </div>
             <div className="stat-item">
-              <FaUsers className="stat-icon" />
+              <FaHeart className="stat-icon" />
               <div className="stat-content">
                 <span className="stat-number">Free</span>
                 <span className="stat-label">Always</span>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
       
       <section className="features-section">
-        <h2 className="section-title">How It Works</h2>
+        <motion.h2 
+          className="section-title"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          How It Works
+        </motion.h2>
         
         <div className="features-grid">
-          <div className="feature-card">
-            <div className="feature-icon feature-icon-1">
-              <FaBrain />
-            </div>
-            <h3 className="feature-title">Quick Assessment</h3>
-            <p className="feature-description">
-              Fill out a simple form about your daily life, sleep, and mood. Takes just 2 minutes.
-            </p>
-          </div>
-          
-          <div className="feature-card">
-            <div className="feature-icon feature-icon-2">
-              <FaShieldAlt />
-            </div>
-            <h3 className="feature-title">Your Privacy Matters</h3>
-            <p className="feature-description">
-              Nothing is saved. Your answers are used only for the prediction and then deleted.
-            </p>
-          </div>
-          
-          <div className="feature-card">
-            <div className="feature-icon feature-icon-3">
-              <FaChartLine />
-            </div>
-            <h3 className="feature-title">Get Helpful Tips</h3>
-            <p className="feature-description">
-              Receive personalized suggestions and resources based on your results.
-            </p>
-          </div>
+          {[
+            {
+              icon: <FaBrain />,
+              title: "Quick Assessment",
+              description: "Complete a comprehensive mental health assessment in just 2-3 minutes with our intuitive form.",
+              gradient: "linear-gradient(135deg, #6366f1, #8b5cf6)"
+            },
+            {
+              icon: <FaShieldAlt />,
+              title: "Your Privacy Matters",
+              description: "Zero data storage. Your responses are processed instantly and never saved to any database.",
+              gradient: "linear-gradient(135deg, #14b8a6, #06b6d4)"
+            },
+            {
+              icon: <FaChartLine />,
+              title: "Actionable Insights",
+              description: "Receive personalized recommendations and access to mental health resources based on your results.",
+              gradient: "linear-gradient(135deg, #f59e0b, #ef4444)"
+            }
+          ].map((feature, index) => (
+            <motion.div 
+              key={index}
+              className="feature-card"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              whileHover={{ y: -10, transition: { duration: 0.2 } }}
+            >
+              <div className="feature-icon" style={{ background: feature.gradient }}>
+                {feature.icon}
+              </div>
+              <h3 className="feature-title">{feature.title}</h3>
+              <p className="feature-description">{feature.description}</p>
+            </motion.div>
+          ))}
         </div>
       </section>
       
-      <section className="cta-section">
+      <motion.section 
+        className="cta-section"
+        initial={{ opacity: 0, scale: 0.95 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="cta-content">
           <h2 className="cta-title">Ready to Check In?</h2>
           <p className="cta-description">
-            Take a moment to understand how you're doing. It's free, private, and takes less than 5 minutes.
+            Take the first step towards understanding your mental wellness. 
+            It's free, private, and takes less than 5 minutes.
           </p>
           <Link to="/predict" className="btn btn-primary btn-large">
-            Start Now
+            Start Assessment Now
             <FaArrowRight className="btn-icon" />
           </Link>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 }
