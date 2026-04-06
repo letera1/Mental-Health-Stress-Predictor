@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { 
   FaChartLine, FaClipboardList, FaBook, 
-  FaUsers, FaCog, FaBell, FaBars, FaTimes
+  FaUsers, FaCog, FaBars, FaTimes
 } from "react-icons/fa";
 import "./Sidebar.css";
 
@@ -16,7 +16,6 @@ function Sidebar() {
     { path: "/resources", icon: <FaBook />, label: "Resources" },
     { path: "/about", icon: <FaUsers />, label: "About" },
     { path: "/settings", icon: <FaCog />, label: "Settings" },
-    { path: "/notifications", icon: <FaBell />, label: "Notifications" },
   ];
 
   const toggleMobile = () => {

@@ -4,6 +4,7 @@ import Dashboard from "./Pages/Dashboard/Dashboard";
 import Predict from "./Pages/predict/Predict";
 import About from "./Pages/About/About";
 import Resource from "./Pages/resource/Resource";
+import Settings from "./Pages/Settings/Settings";
 import "./App.css";
 
 function App() {
@@ -17,8 +18,7 @@ function App() {
             <Route path="/predict" element={<Predict />} />
             <Route path="/about" element={<About />} />
             <Route path="/resources" element={<Resource />} />
-            <Route path="/settings" element={<Dashboard />} />
-            <Route path="/notifications" element={<Dashboard />} />
+            <Route path="/settings" element={<Settings />} />
           </Routes>
         </main>
       </div>
