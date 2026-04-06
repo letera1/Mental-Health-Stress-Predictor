@@ -6,6 +6,7 @@
 ![Python](https://img.shields.io/badge/Python-3.8%2B-blue?logo=python)
 ![React](https://img.shields.io/badge/Frontend-React%2019-61DAFB?logo=react)
 ![Flask](https://img.shields.io/badge/Backend-Flask%203.0-000000?logo=flask)
+![Docker](https://img.shields.io/badge/Deployment-Docker-2496ED?logo=docker&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 **An intelligent mental health assessment platform powered by Ensemble Machine Learning with modern, beautiful UI/UX.**
@@ -13,6 +14,7 @@
 [Features](#-key-features) •
 [Demo](#-screenshots) •
 [Installation](#-installation) •
+[Docker](#-docker-deployment) •
 [Usage](#-usage) •
 [API](#-api-documentation)
 
@@ -176,11 +178,67 @@ MindCare/
 
 ---
 
+## 🐳 Docker Deployment
+
+> ### Ready for production-style container deployment
+> One build creates a **full-stack image**: Flask backend + optimized React frontend bundle.
+
+### What you get
+
+- Single image deployment (`backend` + `frontend` together)
+- Gunicorn-powered Flask runtime
+- Built React static assets served by Flask
+- Health endpoint for container orchestration: `GET /health`
+
+### Build the Docker image
+
+From the project root:
+
+```bash
+docker build -t tuta699/mental-health-stress-detector:tagname .
+```
+
+### Run locally with Docker
+
+```bash
+docker run -d --name mindcare-app -p 5001:5001 tuta699/mental-health-stress-detector:tagname
+```
+
+Open: `http://localhost:5001`
+
+### Push to Docker Hub
+
+```bash
+docker login
+docker push tuta699/mental-health-stress-detector:tagname
+```
+
+### Deploy with Docker Compose
+
+```bash
+docker compose up -d --build
+```
+
+Compose file: `docker-compose.yml`
+
+### Suggested tag strategy
+
+Use semantic tags for cleaner release management:
+
+```bash
+docker build -t tuta699/mental-health-stress-detector:v2.1.0 .
+docker push tuta699/mental-health-stress-detector:v2.1.0
+docker tag tuta699/mental-health-stress-detector:v2.1.0 tuta699/mental-health-stress-detector:latest
+docker push tuta699/mental-health-stress-detector:latest
+```
+
+---
+
 ## 🎯 Usage
 
 ### Taking an Assessment
 
-1. **Open the application** at `http://localhost:5173`
+1. **Open the application** at `http://localhost:5173` (local dev) or `http://localhost:5001` (Docker)
 2. **Navigate to Assessment** page from the navbar
 3. **Fill out the form** with your information:
    - Personal info (Age, Gender, GPA)
@@ -214,28 +272,42 @@ http://localhost:5001
 
 #### Health Check
 ```http
-GET /
+GET /health
 ```
 
-Returns: `"Mental Health Prediction API - POST to /predict"`
+Returns:
+
+```json
+{
+   "status": "ok",
+   "model_loaded": true,
+   "model_name": "mental_health_model_ensemble_soft.pkl"
+}
+```
 
 #### Predict Mental Health Status
 ```http
 POST /predict
 ```
 
+Also supported (frontend-friendly):
+
+```http
+POST /api/predict
+```
+
 **Request Body:**
 ```json
 {
   "Age": 20,
-  "Gender": 0,
+   "Gender": "Male",
   "GPA": 3.5,
   "Stress_Level": 3,
   "Anxiety_Score": 10,
   "Depression_Score": 8,
   "Sleep_Hours": 7,
   "Steps_Per_Day": 6000,
-  "Mood_Description": 2,
+   "Mood_Description": "Anxious",
   "Sentiment_Score": 0.5
 }
 ```
@@ -245,20 +317,21 @@ POST /predict
 | Field | Type | Range | Description |
 |-------|------|-------|-------------|
 | Age | Integer | 17-45 | Student's age |
-| Gender | Integer | 0-2 | 0=Female, 1=Male, 2=Other |
+| Gender | String or Integer | Female/Male/Other or 0-2 | Gender category |
 | GPA | Float | 1.0-4.0 | Grade Point Average |
 | Stress_Level | Integer | 1-5 | Self-perceived stress |
 | Anxiety_Score | Integer | 0-21 | Anxiety assessment score |
 | Depression_Score | Integer | 0-27 | Depression assessment score |
 | Sleep_Hours | Float | 3-9 | Average hours per night |
 | Steps_Per_Day | Integer | 2000-12000 | Daily physical activity |
-| Mood_Description | Integer | 0-6 | Current mood state |
+| Mood_Description | String or Integer | Happy/Sad/Anxious/Tired/Relaxed/Stressed/Motivated or 0-6 | Current mood state |
 | Sentiment_Score | Float | -1 to 1 | Overall sentiment |
 
 **Success Response:**
 ```json
 {
-  "prediction": 0
+   "prediction": 0,
+   "label": "Healthy"
 }
 ```
 
