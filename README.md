@@ -454,7 +454,7 @@ This project is licensed under the MIT License.
 
 <div align="center">
 
-**Made with ❤️ for Mental Health Awareness**
+**Made for Mental Health Awareness**
 
 [Report Bug](https://github.com/yourusername/mindcare/issues) •
 [Request Feature](https://github.com/yourusername/mindcare/issues)
