@@ -8,6 +8,8 @@ import {
 import ResultCard from "../../Components/ResultCard/ResultCard";
 import "./predict.css";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
+
 const initialForm = {
   Age: "",
   Gender: "",
@@ -22,18 +24,19 @@ const initialForm = {
 };
 
 const genderOptions = [
-  { label: "Male", value: 1 },
-  { label: "Female", value: 0 },
+  { label: "Male", value: "Male" },
+  { label: "Female", value: "Female" },
+  { label: "Other", value: "Other" },
 ];
 
 const moodOptions = [
-  { label: "😊 Happy", value: 0 },
-  { label: "😢 Sad", value: 1 },
-  { label: "😰 Anxious", value: 2 },
-  { label: "😴 Tired", value: 3 },
-  { label: "😌 Relaxed", value: 4 },
-  { label: "😫 Stressed", value: 5 },
-  { label: "💪 Motivated", value: 6 },
+  { label: "Happy", value: "Happy" },
+  { label: "Sad", value: "Sad" },
+  { label: "Anxious", value: "Anxious" },
+  { label: "Tired", value: "Tired" },
+  { label: "Relaxed", value: "Relaxed" },
+  { label: "Stressed", value: "Stressed" },
+  { label: "Motivated", value: "Motivated" },
 ];
 
 export default function Predict() {
@@ -54,13 +57,24 @@ export default function Predict() {
     setResult(null);
     setLoading(true);
 
+    const numericFields = new Set([
+      "Age",
+      "GPA",
+      "Stress_Level",
+      "Anxiety_Score",
+      "Depression_Score",
+      "Sleep_Hours",
+      "Steps_Per_Day",
+      "Sentiment_Score",
+    ]);
+
     const data = {};
-    for (let key in initialForm) {
-      data[key] = key === "Sentiment_Score" ? parseFloat(form[key]) : Number(form[key]);
+    for (const key in initialForm) {
+      data[key] = numericFields.has(key) ? Number(form[key]) : form[key];
     }
     
     try {
-      const response = await fetch("http://localhost:5001/predict", {
+      const response = await fetch(`${API_BASE_URL}/predict`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -73,7 +87,7 @@ export default function Predict() {
         setError(res.error || "Something went wrong. Please try again.");
       }
     } catch (err) {
-      setError("Can't connect to server. Make sure the backend is running.");
+      setError("Can't connect to the API. Make sure the backend container/server is running.");
     } finally {
       setLoading(false);
     }
