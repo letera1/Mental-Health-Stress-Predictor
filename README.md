@@ -183,6 +183,8 @@ MindCare/
 > ### Ready for production-style container deployment
 > One build creates a **full-stack image**: Flask backend + optimized React frontend bundle.
 
+Detailed guide: [DOCKER_OVERVIEW.md](DOCKER_OVERVIEW.md)
+
 ### What you get
 
 - Single image deployment (`backend` + `frontend` together)
