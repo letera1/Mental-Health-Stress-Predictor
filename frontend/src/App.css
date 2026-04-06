@@ -6,35 +6,16 @@
 
 .main-content {
   flex: 1;
-  margin-left: 280px;
+  margin-left: 260px;
   min-height: 100vh;
   transition: margin-left var(--transition-base);
   overflow-x: hidden;
 }
 
-/* When sidebar is collapsed */
-.sidebar.collapsed ~ .main-content {
-  margin-left: 80px;
-}
-
 /* Responsive */
-@media (max-width: 1024px) {
-  .main-content {
-    margin-left: 240px;
-  }
-
-  .sidebar.collapsed ~ .main-content {
-    margin-left: 70px;
-  }
-}
-
 @media (max-width: 768px) {
   .main-content {
     margin-left: 0;
     padding-top: 80px;
-  }
-
-  .sidebar.collapsed ~ .main-content {
-    margin-left: 0;
   }
 }
