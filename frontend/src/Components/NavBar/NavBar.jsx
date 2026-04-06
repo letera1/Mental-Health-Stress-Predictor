@@ -35,6 +35,13 @@ function Navbar() {
             <span>Home</span>
           </Link>
           <Link 
+            to="/dashboard" 
+            className={`nav-link ${location.pathname === "/dashboard" ? "active" : ""}`}
+            onClick={closeMenu}
+          >
+            <span>Dashboard</span>
+          </Link>
+          <Link 
             to="/predict" 
             className={`nav-link ${location.pathname === "/predict" ? "active" : ""}`}
             onClick={closeMenu}
