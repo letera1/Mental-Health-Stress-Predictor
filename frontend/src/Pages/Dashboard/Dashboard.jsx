@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { 
   FaBrain, FaHeartbeat, FaMoon, FaRunning, FaSmile, 
-  FaChartLine, FaSearch, FaBell, FaUser, FaArrowUp, FaArrowDown
+  FaChartLine, FaSearch, FaSun, FaArrowUp, FaArrowDown
 } from "react-icons/fa";
 import { 
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
@@ -12,15 +12,23 @@ import { motion } from "framer-motion";
 import "./Dashboard.css";
 
 export default function Dashboard() {
-  const [greeting, setGreeting] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
   useEffect(() => {
-    const hour = new Date().getHours();
-    if (hour < 12) setGreeting("Good Morning");
-    else if (hour < 18) setGreeting("Good Afternoon");
-    else setGreeting("Good Evening");
-  }, []);
+    // Apply theme to document
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark-theme');
+      document.documentElement.classList.remove('light-theme');
+    } else {
+      document.documentElement.classList.add('light-theme');
+      document.documentElement.classList.remove('dark-theme');
+    }
+  }, [isDarkMode]);
+
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+  };
 
   // Sample data for mental health trends (7 days)
   const weeklyData = [
@@ -73,7 +81,8 @@ export default function Dashboard() {
       {/* Top Header */}
       <div className="dashboard-topbar">
         <div className="topbar-left">
-          <h1 className="page-title">{greeting}, welcome back</h1>
+          <h1 className="page-title">Dashboard</h1>
+          <p className="page-subtitle">Monitor your mental wellness journey</p>
         </div>
         <div className="topbar-right">
           <div className="search-box">
@@ -85,12 +94,9 @@ export default function Dashboard() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <button className="icon-btn">
-            <FaBell />
+          <button className="theme-toggle-btn" onClick={toggleTheme}>
+            {isDarkMode ? <FaSun /> : <FaMoon />}
           </button>
-          <div className="user-avatar">
-            <img src="https://ui-avatars.com/api/?name=User&background=6366f1&color=fff" alt="User" />
-          </div>
         </div>
       </div>
 
@@ -238,10 +244,10 @@ export default function Dashboard() {
                 <YAxis stroke="#64748b" tick={{ fontSize: 12 }} />
                 <Tooltip 
                   contentStyle={{ 
-                    background: '#1e293b', 
+                    background: isDarkMode ? '#1e293b' : '#ffffff', 
                     border: '1px solid rgba(148, 163, 184, 0.2)',
                     borderRadius: '8px',
-                    color: '#f1f5f9'
+                    color: isDarkMode ? '#f1f5f9' : '#0f172a'
                   }} 
                 />
                 <Area type="monotone" dataKey="mood" stroke="#6366f1" strokeWidth={2} fill="url(#gradMood)" name="Mood" />
