@@ -1,28 +1,18 @@
 .predict-page {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
+  min-height: 100vh;
+  padding: 2rem;
+  background: var(--bg-primary);
 }
 
 .predict-container {
-  background: rgba(30, 41, 59, 0.6);
+  max-width: 900px;
+  margin: 0 auto;
+  background: var(--bg-card);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-2xl);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  box-shadow: var(--shadow-xl);
   overflow: hidden;
-  animation: slideIn 0.5s ease-out;
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .predict-header {

@@ -1,11 +1,11 @@
 .home-page {
-  max-width: 1200px;
-  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--bg-primary);
 }
 
 .hero-section {
   text-align: center;
-  padding: 5rem 1rem;
+  padding: 4rem 2rem;
   position: relative;
 }
 
