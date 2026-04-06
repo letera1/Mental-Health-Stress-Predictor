@@ -2,19 +2,18 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { 
   FaBrain, FaHeartbeat, FaMoon, FaRunning, FaSmile, 
-  FaChartLine, FaCalendarAlt, FaArrowRight, FaExclamationTriangle,
-  FaCheckCircle, FaLightbulb, FaBook
+  FaChartLine, FaSearch, FaBell, FaUser, FaArrowUp, FaArrowDown
 } from "react-icons/fa";
 import { 
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
-  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer 
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer 
 } from "recharts";
 import { motion } from "framer-motion";
 import "./Dashboard.css";
 
 export default function Dashboard() {
   const [greeting, setGreeting] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const hour = new Date().getHours();
@@ -24,83 +23,39 @@ export default function Dashboard() {
   }, []);
 
   // Sample data for mental health trends (7 days)
-  const weeklyTrends = [
-    { day: "Mon", stress: 3, mood: 7, sleep: 6.5, energy: 6 },
-    { day: "Tue", stress: 4, mood: 6, sleep: 5.5, energy: 5 },
-    { day: "Wed", stress: 3, mood: 7, sleep: 7, energy: 7 },
-    { day: "Thu", stress: 5, mood: 5, sleep: 5, energy: 4 },
-    { day: "Fri", stress: 4, mood: 6, sleep: 6, energy: 6 },
-    { day: "Sat", stress: 2, mood: 8, sleep: 8, energy: 8 },
-    { day: "Sun", stress: 2, mood: 8, sleep: 7.5, energy: 7 },
+  const weeklyData = [
+    { day: "Mon", mood: 7, stress: 3, sleep: 6.5, energy: 6 },
+    { day: "Tue", mood: 6, stress: 4, sleep: 5.5, energy: 5 },
+    { day: "Wed", mood: 7, stress: 3, sleep: 7, energy: 7 },
+    { day: "Thu", mood: 5, stress: 5, sleep: 5, energy: 4 },
+    { day: "Fri", mood: 6, stress: 4, sleep: 6, energy: 6 },
+    { day: "Sat", mood: 8, stress: 2, sleep: 8, energy: 8 },
+    { day: "Sun", mood: 8, stress: 2, sleep: 7.5, energy: 7 },
   ];
 
-  // Mental health factors distribution
-  const factorsData = [
-    { name: "Sleep Quality", value: 75, color: "#6366f1" },
-    { name: "Physical Activity", value: 60, color: "#14b8a6" },
-    { name: "Social Connection", value: 55, color: "#a855f7" },
-    { name: "Academic Stress", value: 40, color: "#f59e0b" },
-    { name: "Self-Care", value: 65, color: "#ec4899" },
+  // Mood distribution
+  const moodData = [
+    { name: "Happy", value: 35, color: "#10b981" },
+    { name: "Calm", value: 25, color: "#6366f1" },
+    { name: "Anxious", value: 20, color: "#f59e0b" },
+    { name: "Stressed", value: 15, color: "#ef4444" },
+    { name: "Tired", value: 5, color: "#94a3b8" },
   ];
 
-  // Wellness score breakdown
-  const wellnessBreakdown = [
-    { category: "Mental", score: 72 },
-    { category: "Physical", score: 68 },
-    { category: "Emotional", score: 75 },
-    { category: "Social", score: 65 },
-    { category: "Academic", score: 70 },
-  ];
-
-  // Quick stats
-  const stats = [
-    {
-      icon: <FaBrain />,
-      label: "Wellness Score",
-      value: "72%",
-      change: "+5%",
-      positive: true,
-      color: "#6366f1"
-    },
-    {
-      icon: <FaMoon />,
-      label: "Avg Sleep",
-      value: "6.8h",
-      change: "+0.5h",
-      positive: true,
-      color: "#a855f7"
-    },
-    {
-      icon: <FaRunning />,
-      label: "Activity Level",
-      value: "7.2k",
-      change: "+12%",
-      positive: true,
-      color: "#14b8a6"
-    },
-    {
-      icon: <FaSmile />,
-      label: "Mood Score",
-      value: "7.1/10",
-      change: "+0.8",
-      positive: true,
-      color: "#ec4899"
-    },
-  ];
-
-  // Recent activities
-  const recentActivities = [
-    { icon: <FaCheckCircle />, text: "Completed daily assessment", time: "2 hours ago", type: "success" },
-    { icon: <FaBook />, text: "Read wellness article", time: "5 hours ago", type: "info" },
-    { icon: <FaLightbulb />, text: "Practiced meditation", time: "1 day ago", type: "success" },
-    { icon: <FaExclamationTriangle />, text: "High stress detected", time: "2 days ago", type: "warning" },
+  // Spending parameters (mental health factors)
+  const factors = [
+    { name: "Sleep", value: 75, color: "#6366f1" },
+    { name: "Exercise", value: 60, color: "#14b8a6" },
+    { name: "Social", value: 45, color: "#a855f7" },
+    { name: "Study", value: 80, color: "#f59e0b" },
+    { name: "Relax", value: 55, color: "#ec4899" },
   ];
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.1 }
+      transition: { staggerChildren: 0.05 }
     }
   };
 
@@ -115,144 +70,201 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-page">
+      {/* Top Header */}
+      <div className="dashboard-topbar">
+        <div className="topbar-left">
+          <h1 className="page-title">{greeting}, welcome back</h1>
+        </div>
+        <div className="topbar-right">
+          <div className="search-box">
+            <FaSearch className="search-icon" />
+            <input 
+              type="text" 
+              placeholder="Search..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <button className="icon-btn">
+            <FaBell />
+          </button>
+          <div className="user-avatar">
+            <img src="https://ui-avatars.com/api/?name=User&background=6366f1&color=fff" alt="User" />
+          </div>
+        </div>
+      </div>
+
       <motion.div 
         className="dashboard-container"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
-        {/* Header */}
-        <motion.div className="dashboard-header" variants={itemVariants}>
-          <div className="header-content">
-            <h1 className="dashboard-title">{greeting}, Welcome Back</h1>
-            <p className="dashboard-subtitle">Here's your mental wellness overview</p>
-          </div>
-          <Link to="/predict" className="btn-take-assessment">
-            <FaChartLine />
-            Take Assessment
-          </Link>
-        </motion.div>
+        {/* Stats Cards Row */}
+        <div className="stats-row">
+          <motion.div className="stat-card" variants={itemVariants}>
+            <div className="stat-header">
+              <span className="stat-label">Wellness Score</span>
+              <select className="stat-dropdown">
+                <option>Last week</option>
+                <option>Last month</option>
+              </select>
+            </div>
+            <div className="stat-value">72.5%</div>
+            <div className="stat-change positive">
+              <FaArrowUp /> 5.2% from last week
+            </div>
+            <div className="stat-chart">
+              <ResponsiveContainer width="100%" height={60}>
+                <AreaChart data={weeklyData}>
+                  <defs>
+                    <linearGradient id="colorMood" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <Area type="monotone" dataKey="mood" stroke="#6366f1" strokeWidth={2} fill="url(#colorMood)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </motion.div>
 
-        {/* Quick Stats Grid */}
-        <motion.div className="stats-grid" variants={itemVariants}>
-          {stats.map((stat, index) => (
-            <motion.div 
-              key={index} 
-              className="stat-card"
-              whileHover={{ y: -5, boxShadow: "0 20px 40px rgba(0,0,0,0.3)" }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <div className="stat-icon" style={{ background: `${stat.color}20`, color: stat.color }}>
-                {stat.icon}
+          <motion.div className="stat-card" variants={itemVariants}>
+            <div className="stat-header">
+              <span className="stat-label">Stress Level</span>
+              <select className="stat-dropdown">
+                <option>Last week</option>
+                <option>Last month</option>
+              </select>
+            </div>
+            <div className="stat-value stress">3.2/5</div>
+            <div className="stat-change negative">
+              <FaArrowDown /> 0.8 from last week
+            </div>
+            <div className="stat-chart">
+              <ResponsiveContainer width="100%" height={60}>
+                <AreaChart data={weeklyData}>
+                  <defs>
+                    <linearGradient id="colorStress" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#a855f7" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#a855f7" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <Area type="monotone" dataKey="stress" stroke="#a855f7" strokeWidth={2} fill="url(#colorStress)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </motion.div>
+
+          <motion.div className="stat-card highlight" variants={itemVariants}>
+            <div className="stat-header">
+              <span className="stat-label">Active Days</span>
+              <span className="stat-badge">This week</span>
+            </div>
+            <div className="stat-value-large">5/7</div>
+            <div className="stat-info">Days with good activity</div>
+            <div className="stat-detail">
+              <div className="detail-item">
+                <FaMoon />
+                <span>6.8h avg sleep</span>
               </div>
-              <div className="stat-content">
-                <span className="stat-label">{stat.label}</span>
-                <div className="stat-value-row">
-                  <span className="stat-value">{stat.value}</span>
-                  <span className={`stat-change ${stat.positive ? 'positive' : 'negative'}`}>
-                    {stat.change}
-                  </span>
+              <div className="detail-item">
+                <FaRunning />
+                <span>7.2k steps</span>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div className="stat-card" variants={itemVariants}>
+            <div className="stat-header">
+              <span className="stat-label">Mood Distribution</span>
+            </div>
+            <div className="donut-chart">
+              <ResponsiveContainer width="100%" height={120}>
+                <PieChart>
+                  <Pie
+                    data={moodData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={35}
+                    outerRadius={50}
+                    paddingAngle={2}
+                    dataKey="value"
+                  >
+                    {moodData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="mood-legend">
+              {moodData.slice(0, 3).map((item, index) => (
+                <div key={index} className="legend-item">
+                  <span className="legend-dot" style={{ background: item.color }}></span>
+                  <span className="legend-label">{item.name} {item.value}%</span>
                 </div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
 
-        {/* Charts Row 1 */}
-        <div className="charts-row">
-          {/* Weekly Trends */}
+        {/* Main Content Grid */}
+        <div className="content-grid">
+          {/* Weekly Trends Chart */}
           <motion.div className="chart-card large" variants={itemVariants}>
-            <div className="chart-header">
-              <h3 className="chart-title">Weekly Mental Health Trends</h3>
-              <select className="chart-filter">
+            <div className="card-header">
+              <h3 className="card-title">Mental Health Trends</h3>
+              <select className="card-dropdown">
                 <option>Last 7 days</option>
                 <option>Last 30 days</option>
                 <option>Last 3 months</option>
               </select>
             </div>
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={weeklyTrends}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.1)" />
-                <XAxis dataKey="day" stroke="#94a3b8" />
-                <YAxis stroke="#94a3b8" />
-                <Tooltip 
-                  contentStyle={{ 
-                    background: 'rgba(30, 41, 59, 0.95)', 
-                    border: '1px solid rgba(148, 163, 184, 0.2)',
-                    borderRadius: '0.5rem',
-                    color: '#f1f5f9'
-                  }} 
-                />
-                <Legend />
-                <Line type="monotone" dataKey="mood" stroke="#6366f1" strokeWidth={3} name="Mood" />
-                <Line type="monotone" dataKey="energy" stroke="#14b8a6" strokeWidth={3} name="Energy" />
-                <Line type="monotone" dataKey="sleep" stroke="#a855f7" strokeWidth={3} name="Sleep (hrs)" />
-              </LineChart>
-            </ResponsiveContainer>
-          </motion.div>
-
-          {/* Wellness Breakdown */}
-          <motion.div className="chart-card" variants={itemVariants}>
-            <div className="chart-header">
-              <h3 className="chart-title">Wellness Breakdown</h3>
-            </div>
-            <ResponsiveContainer width="100%" height={300}>
-              <RadarChart data={wellnessBreakdown}>
-                <PolarGrid stroke="rgba(148, 163, 184, 0.2)" />
-                <PolarAngleAxis dataKey="category" stroke="#94a3b8" />
-                <PolarRadiusAxis stroke="#94a3b8" />
-                <Radar name="Score" dataKey="score" stroke="#6366f1" fill="#6366f1" fillOpacity={0.6} />
-              </RadarChart>
-            </ResponsiveContainer>
-          </motion.div>
-        </div>
-
-        {/* Charts Row 2 */}
-        <div className="charts-row">
-          {/* Stress Levels */}
-          <motion.div className="chart-card" variants={itemVariants}>
-            <div className="chart-header">
-              <h3 className="chart-title">Stress Levels</h3>
-            </div>
-            <ResponsiveContainer width="100%" height={280}>
-              <BarChart data={weeklyTrends}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.1)" />
-                <XAxis dataKey="day" stroke="#94a3b8" />
-                <YAxis stroke="#94a3b8" />
-                <Tooltip 
-                  contentStyle={{ 
-                    background: 'rgba(30, 41, 59, 0.95)', 
-                    border: '1px solid rgba(148, 163, 184, 0.2)',
-                    borderRadius: '0.5rem',
-                    color: '#f1f5f9'
-                  }} 
-                />
-                <Bar dataKey="stress" fill="url(#stressGradient)" radius={[8, 8, 0, 0]} />
+              <AreaChart data={weeklyData}>
                 <defs>
-                  <linearGradient id="stressGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#f59e0b" stopOpacity={0.8}/>
-                    <stop offset="100%" stopColor="#ef4444" stopOpacity={0.8}/>
+                  <linearGradient id="gradMood" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                  </linearGradient>
+                  <linearGradient id="gradEnergy" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#14b8a6" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#14b8a6" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-              </BarChart>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.1)" vertical={false} />
+                <XAxis dataKey="day" stroke="#64748b" tick={{ fontSize: 12 }} />
+                <YAxis stroke="#64748b" tick={{ fontSize: 12 }} />
+                <Tooltip 
+                  contentStyle={{ 
+                    background: '#1e293b', 
+                    border: '1px solid rgba(148, 163, 184, 0.2)',
+                    borderRadius: '8px',
+                    color: '#f1f5f9'
+                  }} 
+                />
+                <Area type="monotone" dataKey="mood" stroke="#6366f1" strokeWidth={2} fill="url(#gradMood)" name="Mood" />
+                <Area type="monotone" dataKey="energy" stroke="#14b8a6" strokeWidth={2} fill="url(#gradEnergy)" name="Energy" />
+              </AreaChart>
             </ResponsiveContainer>
           </motion.div>
 
-          {/* Factors Distribution */}
+          {/* Factors Progress */}
           <motion.div className="chart-card" variants={itemVariants}>
-            <div className="chart-header">
-              <h3 className="chart-title">Contributing Factors</h3>
+            <div className="card-header">
+              <h3 className="card-title">Wellness Factors</h3>
             </div>
             <div className="factors-list">
-              {factorsData.map((factor, index) => (
+              {factors.map((factor, index) => (
                 <div key={index} className="factor-item">
-                  <div className="factor-info">
+                  <div className="factor-header">
                     <span className="factor-name">{factor.name}</span>
-                    <span className="factor-value">{factor.value}%</span>
+                    <span className="factor-percent">{factor.value}%</span>
                   </div>
-                  <div className="factor-bar">
+                  <div className="factor-bar-bg">
                     <motion.div 
-                      className="factor-fill"
+                      className="factor-bar"
                       style={{ background: factor.color }}
                       initial={{ width: 0 }}
                       animate={{ width: `${factor.value}%` }}
@@ -263,53 +275,52 @@ export default function Dashboard() {
               ))}
             </div>
           </motion.div>
+        </div>
 
+        {/* Bottom Row */}
+        <div className="bottom-row">
           {/* Recent Activity */}
-          <motion.div className="chart-card" variants={itemVariants}>
-            <div className="chart-header">
-              <h3 className="chart-title">Recent Activity</h3>
+          <motion.div className="activity-card" variants={itemVariants}>
+            <div className="card-header">
+              <h3 className="card-title">Recent Activity</h3>
+              <Link to="/predict" className="card-link">View all</Link>
             </div>
             <div className="activity-list">
-              {recentActivities.map((activity, index) => (
-                <motion.div 
-                  key={index} 
-                  className={`activity-item ${activity.type}`}
-                  initial={{ x: -20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: index * 0.1 }}
-                >
+              {[
+                { icon: <FaBrain />, title: "Completed Assessment", time: "2 hours ago", amount: "Score: 72%" },
+                { icon: <FaMoon />, title: "Sleep Logged", time: "Yesterday", amount: "7.5 hours" },
+                { icon: <FaRunning />, title: "Exercise Session", time: "2 days ago", amount: "45 min" },
+                { icon: <FaSmile />, title: "Mood Check-in", time: "3 days ago", amount: "Positive" },
+              ].map((activity, index) => (
+                <div key={index} className="activity-item">
                   <div className="activity-icon">{activity.icon}</div>
                   <div className="activity-content">
-                    <p className="activity-text">{activity.text}</p>
-                    <span className="activity-time">{activity.time}</span>
+                    <div className="activity-title">{activity.title}</div>
+                    <div className="activity-time">{activity.time}</div>
                   </div>
-                </motion.div>
+                  <div className="activity-amount">{activity.amount}</div>
+                </div>
               ))}
             </div>
           </motion.div>
-        </div>
 
-        {/* Quick Actions */}
-        <motion.div className="quick-actions" variants={itemVariants}>
-          <h3 className="section-title">Quick Actions</h3>
-          <div className="actions-grid">
-            <Link to="/predict" className="action-card">
-              <FaChartLine className="action-icon" />
-              <span>Take Assessment</span>
-              <FaArrowRight className="action-arrow" />
-            </Link>
-            <Link to="/resources" className="action-card">
-              <FaBook className="action-icon" />
-              <span>View Resources</span>
-              <FaArrowRight className="action-arrow" />
-            </Link>
-            <Link to="/about" className="action-card">
-              <FaLightbulb className="action-icon" />
-              <span>Learn More</span>
-              <FaArrowRight className="action-arrow" />
-            </Link>
-          </div>
-        </motion.div>
+          {/* Quick Actions */}
+          <motion.div className="actions-card" variants={itemVariants}>
+            <div className="card-header">
+              <h3 className="card-title">Quick Actions</h3>
+            </div>
+            <div className="actions-grid">
+              <Link to="/predict" className="action-btn primary">
+                <FaChartLine />
+                <span>Take Assessment</span>
+              </Link>
+              <Link to="/resources" className="action-btn">
+                <FaBrain />
+                <span>Resources</span>
+              </Link>
+            </div>
+          </motion.div>
+        </div>
       </motion.div>
     </div>
   );
