@@ -10,6 +10,7 @@
   z-index: 1000;
   overflow-y: auto;
   overflow-x: hidden;
+  transition: background var(--transition-base);
 }
 
 .sidebar::-webkit-scrollbar {
