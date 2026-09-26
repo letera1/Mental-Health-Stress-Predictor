@@ -342,19 +342,31 @@ textarea::placeholder {
 }
 
 .page {
-  max-width: var(--content-max);
+  width: 100%;
+  max-width: var(--page-max, var(--content-max));
   margin: 0 auto;
   padding: var(--space-8) var(--space-8) var(--space-16);
 }
 
+/* Sticky so the page title and its actions stay reachable while scrolling. */
 .page-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-6);
-  padding: var(--space-6) var(--space-8);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  padding: var(--space-5) var(--space-8);
   border-bottom: 1px solid var(--border);
   background: var(--bg-surface);
+}
+
+/* Matches .page width so the title lines up with the content below it. */
+.page-head__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  width: 100%;
+  max-width: var(--page-max, var(--content-max));
+  margin: 0 auto;
 }
 
 .page-head__title {
@@ -368,6 +380,7 @@ textarea::placeholder {
   margin-top: var(--space-1);
   font-size: var(--fs-base);
   color: var(--text-muted);
+  max-width: 68ch;
 }
 
 .btn {
@@ -485,8 +498,12 @@ textarea::placeholder {
   }
 
   .page-head {
+    padding: var(--space-4);
+  }
+
+  .page-head__inner {
     flex-direction: column;
     align-items: stretch;
-    padding: var(--space-5) var(--space-4);
+    gap: var(--space-3);
   }
 }

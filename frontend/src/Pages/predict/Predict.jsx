@@ -84,17 +84,19 @@ export default function Predict() {
   return (
     <div className="predict">
       <header className="page-head">
-        <div>
-          <h1 className="page-head__title">Assessment</h1>
-          <p className="page-head__sub">
-            Ten indicators, about two minutes. Processed in memory and never stored on a server.
-          </p>
-        </div>
-        <div className="completion">
-          <div className="completion__track">
-            <div className="completion__fill" style={{ width: `${completion}%` }} />
+        <div className="page-head__inner">
+          <div>
+            <h1 className="page-head__title">Assessment</h1>
+            <p className="page-head__sub">
+              Ten indicators, about two minutes. Processed in memory and never stored on a server.
+            </p>
           </div>
-          <span className="completion__value tnum">{completion}% complete</span>
+          <div className="completion">
+            <div className="completion__track">
+              <div className="completion__fill" style={{ width: `${completion}%` }} />
+            </div>
+            <span className="completion__value tnum">{completion}% complete</span>
+          </div>
         </div>
       </header>
 

@@ -24,9 +24,11 @@ export default function Settings() {
   return (
     <div className="settings">
       <header className="page-head">
-        <div>
-          <h1 className="page-head__title">Settings</h1>
-          <p className="page-head__sub">Appearance and the data held on this device.</p>
+        <div className="page-head__inner">
+          <div>
+            <h1 className="page-head__title">Settings</h1>
+            <p className="page-head__sub">Appearance and the data held on this device.</p>
+          </div>
         </div>
       </header>
 

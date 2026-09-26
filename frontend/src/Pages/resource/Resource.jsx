@@ -67,11 +67,14 @@ export default function Resource() {
   return (
     <div className="resources">
       <header className="page-head">
-        <div>
-          <h1 className="page-head__title">Resources</h1>
-          <p className="page-head__sub">
-            Vetted support services. Reaching out early is a practical decision, not a last resort.
-          </p>
+        <div className="page-head__inner">
+          <div>
+            <h1 className="page-head__title">Resources</h1>
+            <p className="page-head__sub">
+              Vetted support services. Reaching out early is a practical decision, not a last
+              resort.
+            </p>
+          </div>
         </div>
       </header>
 

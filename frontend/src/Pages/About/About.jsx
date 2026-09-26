@@ -55,9 +55,11 @@ export default function About() {
   return (
     <div className="about">
       <header className="page-head">
-        <div>
-          <h1 className="page-head__title">About</h1>
-          <p className="page-head__sub">How MindCare works, and where its limits are.</p>
+        <div className="page-head__inner">
+          <div>
+            <h1 className="page-head__title">About</h1>
+            <p className="page-head__sub">How MindCare works, and where its limits are.</p>
+          </div>
         </div>
       </header>
 
