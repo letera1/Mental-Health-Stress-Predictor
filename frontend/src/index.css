@@ -1,3 +1,7 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.theme-dark, .theme-dark *));
+
 /* ============================================================
    MindCare — Design System
    Clinical teal + slate. Calm, high-contrast, low-ornament.
