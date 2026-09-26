@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { NavLink } from "react-router-dom";
 import {
   FiActivity,
   FiBookOpen,
@@ -49,13 +49,8 @@ function BrandMark() {
 }
 
 function Sidebar() {
-  const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
-
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [location.pathname]);
 
   return (
     <>
@@ -95,6 +90,7 @@ function Sidebar() {
                     <NavLink
                       to={to}
                       end={end}
+                      onClick={() => setMobileOpen(false)}
                       className={({ isActive }) => `nav-link${isActive ? " nav-link--active" : ""}`}
                     >
                       <Icon className="nav-link__icon" aria-hidden="true" />
