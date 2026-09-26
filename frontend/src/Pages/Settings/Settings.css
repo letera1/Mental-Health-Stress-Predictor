@@ -1,0 +1,132 @@
+.settings__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  max-width: 760px;
+}
+
+/* ---- Theme picker ---- */
+.theme-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.theme-option {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  text-align: left;
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+}
+
+.theme-option:hover {
+  border-color: var(--border-strong);
+}
+
+.theme-option--active {
+  border-color: var(--accent);
+  box-shadow: var(--ring);
+}
+
+.theme-option__preview {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 68px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.theme-option__preview svg {
+  width: 20px;
+  height: 20px;
+}
+
+.theme-option__preview--light {
+  background: #f6f8f9;
+  border-color: #e2e8f0;
+  color: #0f766e;
+}
+
+.theme-option__preview--dark {
+  background: #0b1117;
+  border-color: #233039;
+  color: #2dd4bf;
+}
+
+.theme-option__label {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  color: var(--text-strong);
+}
+
+.theme-option__check {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: 16px;
+  height: 16px;
+  color: var(--accent);
+  stroke-width: 3;
+}
+
+/* ---- Data rows ---- */
+.data-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding: var(--space-4) 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.data-row:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.data-row:last-child {
+  padding-bottom: 0;
+}
+
+.data-row__title {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-strong);
+}
+
+.data-row__text {
+  margin-top: var(--space-1);
+  font-size: var(--fs-base);
+  color: var(--text-muted);
+  max-width: 52ch;
+}
+
+.data-row .btn,
+.data-row .tag {
+  flex-shrink: 0;
+}
+
+.data-row .tag svg {
+  width: 13px;
+  height: 13px;
+}
+
+@media (max-width: 640px) {
+  .theme-options {
+    grid-template-columns: 1fr;
+  }
+
+  .data-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+}
