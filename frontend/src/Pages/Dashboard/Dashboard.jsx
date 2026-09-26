@@ -48,9 +48,11 @@ export default function Dashboard() {
     return (
       <div className="dash">
         <header className="page-head">
-          <div>
-            <h1 className="page-head__title">Dashboard</h1>
-            <p className="page-head__sub">Your assessment history, stored only on this device.</p>
+          <div className="page-head__inner">
+            <div>
+              <h1 className="page-head__title">Dashboard</h1>
+              <p className="page-head__sub">Your assessment history, stored only on this device.</p>
+            </div>
           </div>
         </header>
 
@@ -79,24 +81,26 @@ export default function Dashboard() {
   return (
     <div className="dash">
       <header className="page-head">
-        <div>
-          <h1 className="page-head__title">Dashboard</h1>
-          <p className="page-head__sub">
-            {stats.total} assessment{stats.total === 1 ? "" : "s"} recorded on this device.
-          </p>
-        </div>
-        <div className="page-head__actions">
-          <button
-            type="button"
-            className="btn btn--ghost"
-            onClick={() => setHistory(clearHistory())}
-          >
-            <FiTrash2 aria-hidden="true" />
-            Clear history
-          </button>
-          <Link to="/predict" className="btn btn--primary">
-            New assessment
-          </Link>
+        <div className="page-head__inner">
+          <div>
+            <h1 className="page-head__title">Dashboard</h1>
+            <p className="page-head__sub">
+              {stats.total} assessment{stats.total === 1 ? "" : "s"} recorded on this device.
+            </p>
+          </div>
+          <div className="page-head__actions">
+            <button
+              type="button"
+              className="btn btn--ghost"
+              onClick={() => setHistory(clearHistory())}
+            >
+              <FiTrash2 aria-hidden="true" />
+              Clear history
+            </button>
+            <Link to="/predict" className="btn btn--primary">
+              New assessment
+            </Link>
+          </div>
         </div>
       </header>
 

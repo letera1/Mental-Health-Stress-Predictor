@@ -1,8 +1,11 @@
+.predict {
+  --page-max: 920px;
+}
+
 .predict__body {
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
-  max-width: 900px;
 }
 
 /* ---- Completion meter in the page header ---- */

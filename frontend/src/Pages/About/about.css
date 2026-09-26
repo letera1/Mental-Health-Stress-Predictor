@@ -1,8 +1,11 @@
+.about {
+  --page-max: 900px;
+}
+
 .about__body {
   display: flex;
   flex-direction: column;
   gap: var(--space-8);
-  max-width: 880px;
 }
 
 /* ---- Intro ---- */

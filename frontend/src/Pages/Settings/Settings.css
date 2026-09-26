@@ -1,8 +1,11 @@
+.settings {
+  --page-max: 800px;
+}
+
 .settings__body {
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
-  max-width: 760px;
 }
 
 /* ---- Theme picker ---- */
