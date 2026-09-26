@@ -1,18 +1,49 @@
-import { useState } from "react";
-import { FiCheck, FiMonitor, FiMoon, FiSun, FiTrash2 } from "react-icons/fi";
+import { useEffect, useState } from "react";
+import { FiCheck, FiCpu, FiMonitor, FiTrash2 } from "react-icons/fi";
 import { useTheme } from "../../theme/theme-context";
 import { clearHistory, readHistory } from "../../lib/history";
 import "./Settings.css";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
 const THEMES = [
-  { value: "light", label: "Light", icon: FiSun },
-  { value: "dark", label: "Dark", icon: FiMoon },
+  { value: "light", label: "Light", hint: "Best for shared or bright spaces" },
+  { value: "dark", label: "Dark", hint: "Easier on the eyes at night" },
 ];
+
+function ThemePreview({ variant }) {
+  return (
+    <span className={`tp tp--${variant}`} aria-hidden="true">
+      <span className="tp__side">
+        <span className="tp__mark" />
+        <span className="tp__line" />
+        <span className="tp__line" />
+        <span className="tp__line tp__line--dim" />
+      </span>
+      <span className="tp__main">
+        <span className="tp__title" />
+        <span className="tp__card" />
+        <span className="tp__card" />
+      </span>
+    </span>
+  );
+}
 
 export default function Settings() {
   const { theme, setTheme } = useTheme();
   const [count, setCount] = useState(() => readHistory().length);
   const [cleared, setCleared] = useState(false);
+  const [service, setService] = useState({ state: "loading" });
+
+  useEffect(() => {
+    let active = true;
+    fetch(`${API_BASE_URL}/health`)
+      .then((response) => (response.ok ? response.json() : Promise.reject(response)))
+      .then((data) => active && setService({ state: "ok", ...data }))
+      .catch(() => active && setService({ state: "down" }));
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const handleClear = () => {
     clearHistory();
@@ -39,7 +70,7 @@ export default function Settings() {
             <p className="panel__sub">Applies instantly and is remembered on this browser.</p>
           </div>
           <div className="theme-options" role="radiogroup" aria-label="Colour theme">
-            {THEMES.map(({ value, label, icon: Icon }) => (
+            {THEMES.map(({ value, label, hint }) => (
               <button
                 key={value}
                 type="button"
@@ -48,11 +79,14 @@ export default function Settings() {
                 className={`theme-option${theme === value ? " theme-option--active" : ""}`}
                 onClick={() => setTheme(value)}
               >
-                <span className={`theme-option__preview theme-option__preview--${value}`}>
-                  <Icon aria-hidden="true" />
+                <ThemePreview variant={value} />
+                <span className="theme-option__meta">
+                  <span className="theme-option__label">{label}</span>
+                  <span className="theme-option__hint">{hint}</span>
                 </span>
-                <span className="theme-option__label">{label}</span>
-                {theme === value && <FiCheck className="theme-option__check" aria-hidden="true" />}
+                <span className="theme-option__check">
+                  <FiCheck aria-hidden="true" />
+                </span>
               </button>
             ))}
           </div>
@@ -67,46 +101,90 @@ export default function Settings() {
             </p>
           </div>
 
-          <div className="data-row">
-            <div>
-              <h3 className="data-row__title">Assessment history</h3>
-              <p className="data-row__text">
-                {count === 0
-                  ? "No assessments stored on this device."
-                  : `${count} assessment${count === 1 ? "" : "s"} stored in this browser's local storage.`}
-              </p>
+          <div className="rows">
+            <div className="row">
+              <div className="row__text">
+                <h3 className="row__title">Assessment history</h3>
+                <p className="row__desc">
+                  {count === 0
+                    ? "No assessments stored on this device."
+                    : `${count} assessment${count === 1 ? "" : "s"} stored in this browser.`}
+                </p>
+              </div>
+              <button
+                type="button"
+                className="btn btn--ghost"
+                onClick={handleClear}
+                disabled={count === 0}
+              >
+                {cleared ? (
+                  <>
+                    <FiCheck aria-hidden="true" />
+                    Cleared
+                  </>
+                ) : (
+                  <>
+                    <FiTrash2 aria-hidden="true" />
+                    Clear history
+                  </>
+                )}
+              </button>
             </div>
-            <button
-              type="button"
-              className="btn btn--ghost"
-              onClick={handleClear}
-              disabled={count === 0}
-            >
-              {cleared ? (
-                <>
-                  <FiCheck aria-hidden="true" />
-                  Cleared
-                </>
-              ) : (
-                <>
-                  <FiTrash2 aria-hidden="true" />
-                  Clear history
-                </>
-              )}
-            </button>
+
+            <div className="row">
+              <div className="row__text">
+                <h3 className="row__title">Server-side storage</h3>
+                <p className="row__desc">
+                  None. The prediction endpoint is stateless and writes nothing to disk.
+                </p>
+              </div>
+              <span className="tag">
+                <FiMonitor aria-hidden="true" />
+                Device only
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <section className="panel">
+          <div className="panel__head">
+            <h2 className="panel__title">Service</h2>
+            <p className="panel__sub">Live status of the model that scores your assessment.</p>
           </div>
 
-          <div className="data-row">
-            <div>
-              <h3 className="data-row__title">Server-side storage</h3>
-              <p className="data-row__text">
-                None. The prediction endpoint is stateless and writes nothing to disk.
-              </p>
+          <div className="rows">
+            <div className="row">
+              <div className="row__text">
+                <h3 className="row__title">Prediction API</h3>
+                <p className="row__desc">
+                  {service.state === "loading" && "Checking…"}
+                  {service.state === "ok" && "Reachable and responding."}
+                  {service.state === "down" &&
+                    "Unreachable. Start the backend with python app.py on port 5001."}
+                </p>
+              </div>
+              <span className={`status status--${service.state}`}>
+                <span className="status__dot" />
+                {service.state === "loading" && "Checking"}
+                {service.state === "ok" && "Online"}
+                {service.state === "down" && "Offline"}
+              </span>
             </div>
-            <span className="tag">
-              <FiMonitor aria-hidden="true" />
-              Device only
-            </span>
+
+            <div className="row">
+              <div className="row__text">
+                <h3 className="row__title">Active model</h3>
+                <p className="row__desc">
+                  {service.state === "ok" && service.model_loaded
+                    ? "Soft-voting ensemble of five classifiers."
+                    : "Unavailable until the service responds."}
+                </p>
+              </div>
+              <span className="tag tag--mono">
+                <FiCpu aria-hidden="true" />
+                {service.state === "ok" && service.model_name ? service.model_name : "—"}
+              </span>
+            </div>
           </div>
         </section>
       </div>
