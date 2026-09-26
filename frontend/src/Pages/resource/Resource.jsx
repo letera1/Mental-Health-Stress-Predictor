@@ -1,274 +1,171 @@
-import { useState, useEffect } from "react";
-import { FaPhone, FaComments, FaExternalLinkAlt, FaHeart, FaUsers, FaBook, FaShieldAlt, FaGraduationCap, FaSun, FaMoon } from "react-icons/fa";
-import { motion } from "framer-motion";
+import { FiArrowUpRight, FiBookOpen, FiHeart, FiMessageSquare, FiPhone, FiShield, FiUsers } from "react-icons/fi";
 import "./resource.css";
 
+const CRISIS = [
+  {
+    name: "988 Suicide & Crisis Lifeline",
+    description: "Free, confidential support for anyone in distress. Available 24 hours a day.",
+    contact: "Call or text 988",
+    href: "tel:988",
+    icon: FiPhone,
+  },
+  {
+    name: "Crisis Text Line",
+    description: "Text-based crisis counselling if speaking out loud feels like too much.",
+    contact: "Text HOME to 741741",
+    href: "sms:741741&body=HOME",
+    icon: FiMessageSquare,
+  },
+];
+
+const ORGANISATIONS = [
+  {
+    name: "National Alliance on Mental Illness",
+    description: "Education, peer support groups, and advocacy across the US.",
+    url: "https://www.nami.org/Home",
+    icon: FiUsers,
+  },
+  {
+    name: "MentalHealth.gov",
+    description: "Government guidance on recognising symptoms and finding treatment.",
+    url: "https://www.mentalhealth.gov/",
+    icon: FiBookOpen,
+  },
+  {
+    name: "Active Minds",
+    description: "Student-led mental health awareness on hundreds of campuses.",
+    url: "https://www.activeminds.org/",
+    icon: FiHeart,
+  },
+  {
+    name: "The Jed Foundation",
+    description: "Emotional health and suicide prevention for teens and young adults.",
+    url: "https://jedfoundation.org/",
+    icon: FiShield,
+  },
+];
+
+const CAMPUS = [
+  {
+    name: "Campus counselling services",
+    description: "Most universities offer a set number of free sessions each term.",
+    action: "Start at your student health centre",
+  },
+  {
+    name: "Student wellness programmes",
+    description: "Workshops, peer support groups, and stress-management sessions.",
+    action: "Check your campus wellness centre",
+  },
+  {
+    name: "Academic support services",
+    description: "Advisors can arrange extensions and adjust workloads during difficult periods.",
+    action: "Contact academic advising",
+  },
+];
+
 export default function Resource() {
-  const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('theme') || 'dark';
-  });
-
-  useEffect(() => {
-    document.documentElement.className = theme === 'light' ? 'light-theme' : 'dark-theme';
-  }, [theme]);
-
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-  };
-
-  const emergencyResources = [
-    {
-      name: "988 Suicide & Crisis Lifeline",
-      description: "24/7 free and confidential support for people in distress",
-      contact: "Call or text 988",
-      link: "tel:988",
-      icon: <FaPhone />,
-      color: "#ef4444"
-    },
-    {
-      name: "Crisis Text Line",
-      description: "Text-based support available 24/7",
-      contact: "Text HOME to 741741",
-      link: "sms:741741&body=HOME",
-      icon: <FaComments />,
-      color: "#f59e0b"
-    }
-  ];
-
-  const mentalHealthResources = [
-    {
-      name: "National Alliance on Mental Illness (NAMI)",
-      description: "Education, support, and advocacy for mental health",
-      url: "https://www.nami.org/Home",
-      icon: <FaUsers />,
-      color: "#6366f1"
-    },
-    {
-      name: "MentalHealth.gov",
-      description: "Comprehensive mental health information and resources",
-      url: "https://www.mentalhealth.gov/",
-      icon: <FaBook />,
-      color: "#14b8a6"
-    },
-    {
-      name: "Active Minds",
-      description: "Student mental health awareness and education",
-      url: "https://www.activeminds.org/",
-      icon: <FaHeart />,
-      color: "#ec4899"
-    },
-    {
-      name: "The Jed Foundation",
-      description: "Protecting emotional health and preventing suicide for teens and young adults",
-      url: "https://jedfoundation.org/",
-      icon: <FaShieldAlt />,
-      color: "#a855f7"
-    }
-  ];
-
-  const campusResources = [
-    {
-      name: "Campus Counseling Services",
-      description: "Most universities offer free or low-cost counseling services to students",
-      action: "Contact your student health center",
-      icon: <FaGraduationCap />
-    },
-    {
-      name: "Student Wellness Programs",
-      description: "Many campuses provide wellness workshops, support groups, and stress management programs",
-      action: "Check your university's wellness center",
-      icon: <FaHeart />
-    },
-    {
-      name: "Academic Support Services",
-      description: "Academic advisors and support services can help manage academic stress",
-      action: "Visit your academic advising office",
-      icon: <FaBook />
-    }
-  ];
-
   return (
-    <div className="resources-page">
-      <div className="resources-topbar">
-        <div className="topbar-left">
-          <h1 className="page-title">Resources</h1>
-          <p className="page-subtitle">Find support and guidance for your mental health journey</p>
-        </div>
-        <button onClick={toggleTheme} className="theme-toggle-btn" aria-label="Toggle theme">
-          {theme === 'light' ? <FaMoon /> : <FaSun />}
-        </button>
-      </div>
-
-      <div className="resources-container">
-        <motion.div 
-          className="resources-hero"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="hero-badge">
-            <FaHeart />
-            <span>You're Not Alone</span>
-          </div>
-          <h2 className="hero-title">Help is Available 24/7</h2>
-          <p className="hero-description">
-            Reach out to any of these trusted resources. Taking the first step towards getting help is a sign of strength.
+    <div className="resources">
+      <header className="page-head">
+        <div>
+          <h1 className="page-head__title">Resources</h1>
+          <p className="page-head__sub">
+            Vetted support services. Reaching out early is a practical decision, not a last resort.
           </p>
-        </motion.div>
+        </div>
+      </header>
 
-        <section className="resources-section emergency-section">
-          <div className="section-header">
-            <div className="section-badge emergency-badge">
-              <FaPhone />
-              <span>Emergency Support</span>
-            </div>
-            <h2 className="section-title">Immediate Help</h2>
-            <p className="section-description">
-              If you're in crisis or need immediate support, these resources are available 24/7.
-            </p>
+      <div className="page resources__body">
+        <section className="crisis">
+          <div className="crisis__head">
+            <span className="tag tag--urgent">Immediate help</span>
+            <h2 className="crisis__title">Available right now, 24/7</h2>
           </div>
-          
-          <div className="resources-grid emergency-grid">
-            {emergencyResources.map((resource, index) => (
-              <motion.a
-                key={index}
-                href={resource.link}
-                className="resource-card emergency-card"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ y: -4, scale: 1.02 }}
-              >
-                <div className="resource-icon-wrapper" style={{ background: `${resource.color}15` }}>
-                  <div className="resource-icon" style={{ color: resource.color }}>
-                    {resource.icon}
-                  </div>
+          <div className="crisis__grid">
+            {CRISIS.map(({ name, description, contact, href, icon: Icon }) => (
+              <a key={name} href={href} className="crisis-card">
+                <span className="crisis-card__icon">
+                  <Icon aria-hidden="true" />
+                </span>
+                <div className="crisis-card__body">
+                  <h3 className="crisis-card__name">{name}</h3>
+                  <p className="crisis-card__desc">{description}</p>
+                  <span className="crisis-card__contact">{contact}</span>
                 </div>
-                <div className="resource-content">
-                  <h3 className="resource-name">{resource.name}</h3>
-                  <p className="resource-description">{resource.description}</p>
-                  <div className="resource-contact">{resource.contact}</div>
-                </div>
-                <div className="resource-arrow">→</div>
-              </motion.a>
+              </a>
             ))}
           </div>
         </section>
 
-        <section className="resources-section">
-          <div className="section-header">
-            <div className="section-badge">
-              <FaHeart />
-              <span>Mental Health Organizations</span>
-            </div>
-            <h2 className="section-title">National Resources</h2>
-            <p className="section-description">
-              Trusted organizations providing information, support, and advocacy for mental health.
-            </p>
-          </div>
-          
-          <div className="resources-grid">
-            {mentalHealthResources.map((resource, index) => (
-              <motion.a
-                key={index}
-                href={resource.url}
+        <section>
+          <SectionHead
+            eyebrow="National organisations"
+            title="Ongoing support and education"
+            sub="Established non-profits with free information, directories, and peer communities."
+          />
+          <div className="link-grid">
+            {ORGANISATIONS.map(({ name, description, url, icon: Icon }) => (
+              <a
+                key={name}
+                href={url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="resource-card"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ y: -4 }}
+                className="link-card"
               >
-                <div className="resource-icon-wrapper" style={{ background: `${resource.color}15` }}>
-                  <div className="resource-icon" style={{ color: resource.color }}>
-                    {resource.icon}
-                  </div>
-                </div>
-                <div className="resource-content">
-                  <h3 className="resource-name">
-                    {resource.name}
-                    <FaExternalLinkAlt className="external-icon" />
+                <span className="link-card__icon">
+                  <Icon aria-hidden="true" />
+                </span>
+                <div>
+                  <h3 className="link-card__name">
+                    {name}
+                    <FiArrowUpRight aria-hidden="true" />
                   </h3>
-                  <p className="resource-description">{resource.description}</p>
+                  <p className="link-card__desc">{description}</p>
                 </div>
-              </motion.a>
+              </a>
             ))}
           </div>
         </section>
 
-        <section className="resources-section">
-          <div className="section-header">
-            <div className="section-badge">
-              <FaGraduationCap />
-              <span>Campus Support</span>
-            </div>
-            <h2 className="section-title">On-Campus Resources</h2>
-            <p className="section-description">
-              Take advantage of the mental health and wellness resources available at your university.
-            </p>
-          </div>
-          
-          <div className="campus-resources">
-            {campusResources.map((resource, index) => (
-              <motion.div
-                key={index}
-                className="campus-card"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ x: 4 }}
-              >
-                <div className="campus-icon">
-                  {resource.icon}
+        <section>
+          <SectionHead
+            eyebrow="On campus"
+            title="Support you already have access to"
+            sub="Usually free, usually underused."
+          />
+          <ul className="campus">
+            {CAMPUS.map(({ name, description, action }) => (
+              <li key={name} className="campus__row">
+                <div>
+                  <h3 className="campus__name">{name}</h3>
+                  <p className="campus__desc">{description}</p>
                 </div>
-                <div className="campus-content">
-                  <h3 className="campus-name">{resource.name}</h3>
-                  <p className="campus-description">{resource.description}</p>
-                  <div className="campus-action">{resource.action}</div>
-                </div>
-              </motion.div>
+                <span className="campus__action">{action}</span>
+              </li>
             ))}
-          </div>
+          </ul>
         </section>
 
-        <div className="info-grid">
-          <motion.div
-            className="info-card"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3 }}
-          >
-            <div className="info-icon">
-              <FaHeart />
-            </div>
-            <h3 className="info-title">Remember</h3>
-            <ul className="info-list">
-              <li>Seeking help is a sign of strength, not weakness</li>
-              <li>Mental health is just as important as physical health</li>
-              <li>Recovery is possible with the right support</li>
-              <li>You deserve to feel better</li>
-            </ul>
-          </motion.div>
-          
-          <motion.div
-            className="warning-card"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4 }}
-          >
-            <div className="warning-icon-wrapper">
-              <FaPhone className="warning-icon" />
-            </div>
-            <h3 className="warning-title">In Case of Emergency</h3>
-            <p className="warning-text">
-              If you or someone you know is in immediate danger, please call 911 or go to your nearest emergency room.
+        <aside className="notice">
+          <FiPhone className="notice__icon" aria-hidden="true" />
+          <div>
+            <h3 className="notice__title">If someone is in immediate danger</h3>
+            <p className="notice__text">
+              Call 911 or go to the nearest emergency department. Do not leave the person alone.
             </p>
-          </motion.div>
-        </div>
+          </div>
+        </aside>
       </div>
+    </div>
+  );
+}
+
+function SectionHead({ eyebrow, title, sub }) {
+  return (
+    <div className="section-head">
+      <p className="eyebrow">{eyebrow}</p>
+      <h2 className="section-head__title">{title}</h2>
+      <p className="section-head__sub">{sub}</p>
     </div>
   );
 }
