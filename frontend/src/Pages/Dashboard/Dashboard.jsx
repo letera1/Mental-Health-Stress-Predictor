@@ -145,7 +145,9 @@ export default function Dashboard() {
         <section className="panel">
           <div className="panel__head">
             <h2 className="panel__title">Stress and sleep over time</h2>
-            <p className="panel__sub">Last {trend.length} assessments</p>
+            <p className="panel__sub">
+              Last {trend.length} assessment{trend.length === 1 ? "" : "s"}
+            </p>
           </div>
 
           {trend.length < 2 ? (
