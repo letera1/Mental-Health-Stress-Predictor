@@ -1,113 +1,93 @@
-import { FaCheckCircle, FaExclamationTriangle, FaExclamationCircle, FaArrowRight } from "react-icons/fa";
+import { FiAlertCircle, FiAlertTriangle, FiArrowRight, FiCheck, FiPhone } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import { OUTCOMES } from "../../lib/assessment";
 import "./ResultCard.css";
 
-export default function ResultCard({ prediction }) {
-  const LABELS = {
-    0: "Healthy",
-    1: "At Risk",
-    2: "Struggling",
-  };
+const ICONS = {
+  0: FiCheck,
+  1: FiAlertTriangle,
+  2: FiAlertCircle,
+};
 
-  const COLORS = {
-    0: { bg: "#d1fae5", border: "#10b981", text: "#065f46" },
-    1: { bg: "#fef3c7", border: "#f59e0b", text: "#92400e" },
-    2: { bg: "#fee2e2", border: "#ef4444", text: "#991b1b" },
-  };
+export default function ResultCard({ prediction, confidence, probabilities }) {
+  const outcome = OUTCOMES[prediction];
+  if (!outcome) return null;
 
-  const ICONS = {
-    0: <FaCheckCircle />,
-    1: <FaExclamationTriangle />,
-    2: <FaExclamationCircle />,
-  };
-
-  const MESSAGES = {
-    0: {
-      title: "Great News!",
-      description: "Your assessment indicates healthy mental wellness. Keep up the excellent habits and continue prioritizing your well-being.",
-      tips: [
-        "Maintain your current sleep schedule",
-        "Continue regular physical activity",
-        "Keep engaging in activities you enjoy"
-      ]
-    },
-    1: {
-      title: "Attention Needed",
-      description: "Your assessment shows some risk factors. It's important to take proactive steps to support your mental health.",
-      tips: [
-        "Consider talking to a counselor",
-        "Review our mental health resources",
-        "Focus on stress management techniques",
-        "Ensure adequate sleep and exercise"
-      ]
-    },
-    2: {
-      title: "Immediate Support Recommended",
-      description: "Your assessment indicates you may be struggling. Please reach out for professional support—your wellbeing matters.",
-      tips: [
-        "Contact a mental health professional immediately",
-        "Reach out to campus counseling services",
-        "Talk to someone you trust",
-        "Call 988 for immediate crisis support"
-      ]
-    }
-  };
-
-  const currentColor = COLORS[prediction];
-  const currentMessage = MESSAGES[prediction];
+  const Icon = ICONS[prediction];
+  const bars = probabilities
+    ? Object.entries(probabilities).sort((a, b) => b[1] - a[1])
+    : null;
 
   return (
-    <div className="result-card-container">
-      <div 
-        className="result-card" 
-        style={{ 
-          background: currentColor.bg,
-          borderColor: currentColor.border,
-          color: currentColor.text
-        }}
-      >
-        <div className="result-header">
-          <div className="result-icon" style={{ color: currentColor.border }}>
-            {ICONS[prediction]}
+    <section className={`result result--${outcome.tone}`} aria-live="polite">
+      <header className="result__head">
+        <span className="result__badge">
+          <Icon aria-hidden="true" />
+        </span>
+        <div>
+          <p className="eyebrow">Assessment result</p>
+          <h2 className="result__title">{outcome.label}</h2>
+        </div>
+        {typeof confidence === "number" && (
+          <div className="result__confidence">
+            <span className="result__confidence-value tnum">{Math.round(confidence * 100)}%</span>
+            <span className="eyebrow">Model confidence</span>
           </div>
-          <div className="result-status">
-            <span className="result-label">Assessment Result</span>
-            <h2 className="result-title">{LABELS[prediction]}</h2>
+        )}
+      </header>
+
+      <div className="result__body">
+        <h3 className="result__headline">{outcome.headline}</h3>
+        <p className="result__summary">{outcome.summary}</p>
+
+        {bars && (
+          <div className="result__dist">
+            <p className="eyebrow">Probability distribution</p>
+            {bars.map(([name, value]) => (
+              <div key={name} className="dist-row">
+                <span className="dist-row__label">{name}</span>
+                <div className="dist-row__track">
+                  <div
+                    className={`dist-row__fill${name === outcome.label ? " dist-row__fill--lead" : ""}`}
+                    style={{ width: `${Math.max(value * 100, 1.5)}%` }}
+                  />
+                </div>
+                <span className="dist-row__value tnum">{(value * 100).toFixed(1)}%</span>
+              </div>
+            ))}
           </div>
+        )}
+
+        <div className="result__actions-block">
+          <p className="eyebrow">Recommended next steps</p>
+          <ul className="result__list">
+            {outcome.actions.map((action) => (
+              <li key={action}>
+                <FiCheck aria-hidden="true" />
+                <span>{action}</span>
+              </li>
+            ))}
+          </ul>
         </div>
 
-        <div className="result-content">
-          <h3 className="result-message-title">{currentMessage.title}</h3>
-          <p className="result-description">{currentMessage.description}</p>
-
-          <div className="result-tips">
-            <h4 className="tips-heading">Recommended Actions:</h4>
-            <ul className="tips-list">
-              {currentMessage.tips.map((tip, index) => (
-                <li key={index}>{tip}</li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="result-actions">
-            <Link to="/resources" className="result-btn">
-              View Resources
-              <FaArrowRight />
-            </Link>
-            {prediction === 2 && (
-              <a href="tel:988" className="result-btn result-btn-emergency">
-                Call 988 Now
-              </a>
-            )}
-          </div>
+        <div className="result__cta">
+          <Link to="/resources" className="btn btn--ghost">
+            View resources
+            <FiArrowRight aria-hidden="true" />
+          </Link>
+          {prediction === 2 && (
+            <a href="tel:988" className="btn btn--danger">
+              <FiPhone aria-hidden="true" />
+              Call 988 now
+            </a>
+          )}
         </div>
       </div>
 
-      <div className="result-disclaimer">
-        <p>
-          <strong>Disclaimer:</strong> This assessment is for educational purposes only and should not be used as a substitute for professional medical advice, diagnosis, or treatment. If you're experiencing a mental health crisis, please contact emergency services or call 988.
-        </p>
-      </div>
-    </div>
+      <footer className="result__disclaimer">
+        This is a screening aid, not a diagnosis. It cannot replace assessment by a qualified
+        clinician. In an emergency, call 911 or 988.
+      </footer>
+    </section>
   );
 }
