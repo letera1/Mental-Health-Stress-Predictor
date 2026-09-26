@@ -6,15 +6,14 @@ import About from "./Pages/About/About";
 import Resource from "./Pages/resource/Resource";
 import Settings from "./Pages/Settings/Settings";
 import { ThemeProvider } from "./theme/ThemeProvider";
-import "./App.css";
 
 function App() {
   return (
     <ThemeProvider>
       <Router>
-        <div className="app-shell">
+        <div className="flex min-h-screen bg-canvas text-body">
           <Sidebar />
-          <main className="app-main">
+          <main className="min-w-0 flex-1 pt-14 lg:pt-0">
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/dashboard" element={<Dashboard />} />
