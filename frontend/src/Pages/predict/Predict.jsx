@@ -1,433 +1,400 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { 
-  FaBrain, FaUser, FaGraduationCap, FaHeartbeat, 
-  FaMoon, FaRunning, FaSmile, FaCheckCircle, 
-  FaExclamationTriangle, FaSpinner, FaArrowRight
-} from "react-icons/fa";
+import { useMemo, useState } from "react";
+import { FiAlertCircle, FiArrowRight, FiLoader } from "react-icons/fi";
 import ResultCard from "../../Components/ResultCard/ResultCard";
+import {
+  EMPTY_FORM,
+  GENDER_OPTIONS,
+  MOOD_OPTIONS,
+  NUMERIC_FIELDS,
+} from "../../lib/assessment";
+import { appendEntry } from "../../lib/history";
 import "./predict.css";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
+const NUMERIC_SET = new Set(NUMERIC_FIELDS);
 
-const initialForm = {
-  Age: "",
-  Gender: "",
-  GPA: "",
-  Stress_Level: "",
-  Anxiety_Score: "",
-  Depression_Score: "",
-  Sleep_Hours: "",
-  Steps_Per_Day: "",
-  Mood_Description: "",
-  Sentiment_Score: "0",
-};
-
-const genderOptions = [
-  { label: "Male", value: "Male" },
-  { label: "Female", value: "Female" },
-  { label: "Other", value: "Other" },
-];
-
-const moodOptions = [
-  { label: "Happy", value: "Happy" },
-  { label: "Sad", value: "Sad" },
-  { label: "Anxious", value: "Anxious" },
-  { label: "Tired", value: "Tired" },
-  { label: "Relaxed", value: "Relaxed" },
-  { label: "Stressed", value: "Stressed" },
-  { label: "Motivated", value: "Motivated" },
+const SECTIONS = [
+  { id: "profile", index: "01", title: "Profile", hint: "Baseline academic context." },
+  {
+    id: "clinical",
+    index: "02",
+    title: "Clinical indicators",
+    hint: "Use your most recent GAD-7 and PHQ-9 scores if you have them.",
+  },
+  { id: "lifestyle", index: "03", title: "Lifestyle", hint: "Typical week, not your best day." },
+  { id: "mood", index: "04", title: "Mood", hint: "How things feel right now." },
 ];
 
 export default function Predict() {
-  const [form, setForm] = useState(initialForm);
+  const [form, setForm] = useState(EMPTY_FORM);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+  const completion = useMemo(() => {
+    const keys = Object.keys(EMPTY_FORM);
+    const filled = keys.filter((key) => form[key] !== "" && form[key] !== null).length;
+    return Math.round((filled / keys.length) * 100);
+  }, [form]);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setForm((current) => ({ ...current, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     setError(null);
     setResult(null);
     setLoading(true);
 
-    const numericFields = new Set([
-      "Age",
-      "GPA",
-      "Stress_Level",
-      "Anxiety_Score",
-      "Depression_Score",
-      "Sleep_Hours",
-      "Steps_Per_Day",
-      "Sentiment_Score",
-    ]);
-
-    const data = {};
-    for (const key in initialForm) {
-      data[key] = numericFields.has(key) ? Number(form[key]) : form[key];
+    const payload = {};
+    for (const key of Object.keys(EMPTY_FORM)) {
+      payload[key] = NUMERIC_SET.has(key) ? Number(form[key]) : form[key];
     }
-    
+
     try {
       const response = await fetch(`${API_BASE_URL}/predict`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
-      const res = await response.json();
-      if (response.ok) {
-        setResult(res.prediction);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        setError(res.error || "Something went wrong. Please try again.");
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || "The assessment could not be completed. Please try again.");
+        return;
       }
-    } catch (err) {
-      setError("Can't connect to the API. Make sure the backend container/server is running.");
+
+      setResult(data);
+      appendEntry({
+        prediction: data.prediction,
+        label: data.label,
+        confidence: data.confidence ?? null,
+        inputs: payload,
+      });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch {
+      setError("Cannot reach the assessment service. Check that the backend is running.");
     } finally {
       setLoading(false);
     }
   };
 
-  const progressPercentage = (Object.values(form).filter(v => v !== "").length / Object.keys(form).length) * 100;
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { type: "spring", stiffness: 100 }
-    }
-  };
-
   return (
-    <div className="predict-page">
-      {/* Header */}
-      <div className="predict-header">
-        <div className="header-content">
-          <motion.div 
-            className="header-icon"
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 200 }}
-          >
-            <FaBrain />
-          </motion.div>
-          <h1 className="predict-title">Mental Health Assessment</h1>
-          <p className="predict-subtitle">
-            Take a comprehensive assessment to understand your mental wellness
+    <div className="predict">
+      <header className="page-head">
+        <div>
+          <h1 className="page-head__title">Assessment</h1>
+          <p className="page-head__sub">
+            Ten indicators, about two minutes. Processed in memory and never stored on a server.
           </p>
         </div>
-
-        {/* Progress Bar */}
-        <div className="progress-container">
-          <div className="progress-bar">
-            <motion.div 
-              className="progress-fill"
-              initial={{ width: 0 }}
-              animate={{ width: `${progressPercentage}%` }}
-              transition={{ duration: 0.5 }}
-            />
+        <div className="completion">
+          <div className="completion__track">
+            <div className="completion__fill" style={{ width: `${completion}%` }} />
           </div>
-          <span className="progress-text">{Math.round(progressPercentage)}% Complete</span>
+          <span className="completion__value tnum">{completion}% complete</span>
         </div>
-      </div>
+      </header>
 
-      <motion.div 
-        className="predict-container"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        {result !== null && <ResultCard prediction={result} />}
+      <div className="page predict__body">
+        {result && (
+          <ResultCard
+            prediction={result.prediction}
+            confidence={result.confidence}
+            probabilities={result.probabilities}
+          />
+        )}
 
-        <form onSubmit={handleSubmit} className="predict-form">
-          {/* Personal Information */}
-          <motion.div className="form-section" variants={itemVariants}>
-            <div className="section-header">
-              <FaUser className="section-icon" />
-              <h2 className="section-title">Personal Information</h2>
-            </div>
-            
-            <div className="form-grid">
-              <div className="form-group">
-                <label htmlFor="Age" className="form-label">Age</label>
+        {error && (
+          <div className="alert" role="alert">
+            <FiAlertCircle aria-hidden="true" />
+            <p>{error}</p>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="form">
+          {/* ---- 01 Profile ---- */}
+          <FormSection meta={SECTIONS[0]}>
+            <Field
+              label="Age"
+              hint="17 to 45"
+              input={
                 <input
                   id="Age"
-                  type="number"
                   name="Age"
+                  type="number"
                   value={form.Age}
                   onChange={handleChange}
                   required
                   min="17"
                   max="45"
-                  className="form-input"
-                  placeholder="Enter your age"
+                  className="input"
+                  placeholder="e.g. 21"
                 />
-                <span className="form-hint">Age between 17-45 years</span>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="Gender" className="form-label">Gender</label>
-                <div className="radio-group">
-                  {genderOptions.map((option) => (
-                    <label key={option.value} className="radio-label">
-                      <input
-                        type="radio"
-                        name="Gender"
-                        value={option.value}
-                        checked={form.Gender === String(option.value)}
-                        onChange={handleChange}
-                        required
-                        className="radio-input"
-                      />
-                      <span className="radio-custom"></span>
-                      <span className="radio-text">{option.label}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="GPA" className="form-label">
-                  <FaGraduationCap className="label-icon" />
-                  GPA
-                </label>
+              }
+            />
+            <Field
+              label="Grade point average"
+              hint="1.00 to 4.00"
+              input={
                 <input
                   id="GPA"
-                  type="number"
                   name="GPA"
+                  type="number"
                   value={form.GPA}
                   onChange={handleChange}
                   required
                   step="0.01"
                   min="1"
                   max="4"
-                  className="form-input"
-                  placeholder="0.00"
+                  className="input"
+                  placeholder="e.g. 3.20"
                 />
-                <span className="form-hint">Grade Point Average (1.00 - 4.00)</span>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Mental Health Indicators */}
-          <motion.div className="form-section" variants={itemVariants}>
-            <div className="section-header">
-              <FaHeartbeat className="section-icon" />
-              <h2 className="section-title">Mental Health Indicators</h2>
-            </div>
-            
-            <div className="form-grid">
-              <div className="form-group">
-                <label htmlFor="Stress_Level" className="form-label">Stress Level</label>
-                <div className="slider-container">
-                  <input
-                    id="Stress_Level"
-                    type="range"
-                    name="Stress_Level"
-                    value={form.Stress_Level || 1}
-                    onChange={handleChange}
-                    required
-                    min="1"
-                    max="5"
-                    className="form-slider"
-                  />
-                  <div className="slider-value">{form.Stress_Level || 1}/5</div>
+              }
+            />
+            <Field
+              label="Gender"
+              full
+              input={
+                <div className="choice-row">
+                  {GENDER_OPTIONS.map((option) => (
+                    <label key={option.value} className="choice">
+                      <input
+                        type="radio"
+                        name="Gender"
+                        value={option.value}
+                        checked={form.Gender === option.value}
+                        onChange={handleChange}
+                        required
+                      />
+                      <span className="choice__face">{option.label}</span>
+                    </label>
+                  ))}
                 </div>
-                <div className="slider-labels">
-                  <span>Low</span>
-                  <span>Moderate</span>
-                  <span>High</span>
-                </div>
-              </div>
+              }
+            />
+          </FormSection>
 
-              <div className="form-group">
-                <label htmlFor="Anxiety_Score" className="form-label">Anxiety Score</label>
+          {/* ---- 02 Clinical ---- */}
+          <FormSection meta={SECTIONS[1]}>
+            <Field
+              label="Perceived stress"
+              full
+              hint="1 = minimal, 5 = overwhelming"
+              input={
+                <Slider
+                  id="Stress_Level"
+                  name="Stress_Level"
+                  value={form.Stress_Level}
+                  onChange={handleChange}
+                  min={1}
+                  max={5}
+                  step={1}
+                  display={`${form.Stress_Level} / 5`}
+                  ticks={["Minimal", "Moderate", "Overwhelming"]}
+                />
+              }
+            />
+            <Field
+              label="Anxiety score"
+              hint="GAD-7 scale, 0 to 21"
+              input={
                 <input
                   id="Anxiety_Score"
-                  type="number"
                   name="Anxiety_Score"
+                  type="number"
                   value={form.Anxiety_Score}
                   onChange={handleChange}
                   required
                   min="0"
                   max="21"
-                  className="form-input"
+                  className="input"
                   placeholder="0-21"
                 />
-                <span className="form-hint">0 = None, 21 = Severe</span>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="Depression_Score" className="form-label">Depression Score</label>
+              }
+            />
+            <Field
+              label="Depression score"
+              hint="PHQ-9 scale, 0 to 27"
+              input={
                 <input
                   id="Depression_Score"
-                  type="number"
                   name="Depression_Score"
+                  type="number"
                   value={form.Depression_Score}
                   onChange={handleChange}
                   required
                   min="0"
                   max="27"
-                  className="form-input"
+                  className="input"
                   placeholder="0-27"
                 />
-                <span className="form-hint">0 = None, 27 = Severe</span>
-              </div>
-            </div>
-          </motion.div>
+              }
+            />
+          </FormSection>
 
-          {/* Lifestyle Factors */}
-          <motion.div className="form-section" variants={itemVariants}>
-            <div className="section-header">
-              <FaMoon className="section-icon" />
-              <h2 className="section-title">Lifestyle Factors</h2>
-            </div>
-            
-            <div className="form-grid">
-              <div className="form-group">
-                <label htmlFor="Sleep_Hours" className="form-label">
-                  <FaMoon className="label-icon" />
-                  Sleep Hours
-                </label>
+          {/* ---- 03 Lifestyle ---- */}
+          <FormSection meta={SECTIONS[2]}>
+            <Field
+              label="Sleep per night"
+              hint="Average hours, 3 to 9"
+              input={
                 <input
                   id="Sleep_Hours"
-                  type="number"
                   name="Sleep_Hours"
+                  type="number"
                   value={form.Sleep_Hours}
                   onChange={handleChange}
                   required
                   step="0.5"
                   min="3"
                   max="9"
-                  className="form-input"
-                  placeholder="0.0"
+                  className="input"
+                  placeholder="e.g. 7"
                 />
-                <span className="form-hint">Average hours per night (3-9)</span>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="Steps_Per_Day" className="form-label">
-                  <FaRunning className="label-icon" />
-                  Daily Steps
-                </label>
+              }
+            />
+            <Field
+              label="Steps per day"
+              hint="2,000 to 12,000"
+              input={
                 <input
                   id="Steps_Per_Day"
-                  type="number"
                   name="Steps_Per_Day"
+                  type="number"
                   value={form.Steps_Per_Day}
                   onChange={handleChange}
                   required
                   min="2000"
                   max="12000"
-                  className="form-input"
-                  placeholder="0"
+                  step="100"
+                  className="input"
+                  placeholder="e.g. 6000"
                 />
-                <span className="form-hint">Steps per day (2,000 - 12,000)</span>
-              </div>
-            </div>
-          </motion.div>
+              }
+            />
+          </FormSection>
 
-          {/* Mood & Sentiment */}
-          <motion.div className="form-section" variants={itemVariants}>
-            <div className="section-header">
-              <FaSmile className="section-icon" />
-              <h2 className="section-title">Mood & Sentiment</h2>
-            </div>
-            
-            <div className="form-grid">
-              <div className="form-group full-width">
-                <label htmlFor="Mood_Description" className="form-label">Current Mood</label>
-                <div className="mood-grid">
-                  {moodOptions.map((mood) => (
-                    <label key={mood.value} className="mood-option">
+          {/* ---- 04 Mood ---- */}
+          <FormSection meta={SECTIONS[3]}>
+            <Field
+              label="Closest description of your mood"
+              full
+              input={
+                <div className="choice-grid">
+                  {MOOD_OPTIONS.map((mood) => (
+                    <label key={mood.value} className="choice">
                       <input
                         type="radio"
                         name="Mood_Description"
                         value={mood.value}
-                        checked={form.Mood_Description === String(mood.value)}
+                        checked={form.Mood_Description === mood.value}
                         onChange={handleChange}
                         required
-                        className="mood-input"
                       />
-                      <span className="mood-card">
-                        {mood.label}
-                      </span>
+                      <span className="choice__face">{mood.label}</span>
                     </label>
                   ))}
                 </div>
-              </div>
+              }
+            />
+            <Field
+              label="Overall sentiment"
+              full
+              hint="Your general outlook over the past week"
+              input={
+                <Slider
+                  id="Sentiment_Score"
+                  name="Sentiment_Score"
+                  value={form.Sentiment_Score}
+                  onChange={handleChange}
+                  min={-1}
+                  max={1}
+                  step={0.1}
+                  display={Number(form.Sentiment_Score).toFixed(1)}
+                  ticks={["Negative", "Neutral", "Positive"]}
+                />
+              }
+            />
+          </FormSection>
 
-              <div className="form-group full-width">
-                <label htmlFor="Sentiment_Score" className="form-label">
-                  Overall Sentiment: {form.Sentiment_Score}
-                </label>
-                <div className="slider-container">
-                  <input
-                    id="Sentiment_Score"
-                    type="range"
-                    name="Sentiment_Score"
-                    value={form.Sentiment_Score}
-                    onChange={handleChange}
-                    required
-                    min="-1"
-                    max="1"
-                    step="0.1"
-                    className="form-slider sentiment-slider"
-                  />
-                </div>
-                <div className="slider-labels">
-                  <span>Very Negative</span>
-                  <span>Neutral</span>
-                  <span>Very Positive</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Submit Button */}
-          <motion.div className="form-actions" variants={itemVariants}>
-            <button type="submit" disabled={loading} className="submit-btn">
+          <div className="form__submit">
+            <p className="form__note">
+              Results are a screening signal, not a diagnosis. Review them with a professional.
+            </p>
+            <button type="submit" className="btn btn--primary btn--lg" disabled={loading}>
               {loading ? (
                 <>
-                  <FaSpinner className="spinner" />
-                  Analyzing...
+                  <FiLoader className="spin" aria-hidden="true" />
+                  Analysing
                 </>
               ) : (
                 <>
-                  <FaCheckCircle />
-                  Get Assessment
-                  <FaArrowRight />
+                  Run assessment
+                  <FiArrowRight aria-hidden="true" />
                 </>
               )}
             </button>
-          </motion.div>
+          </div>
         </form>
+      </div>
+    </div>
+  );
+}
 
-        {error && (
-          <motion.div 
-            className="error-box"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <FaExclamationTriangle className="error-icon" />
-            <p>{error}</p>
-          </motion.div>
-        )}
-      </motion.div>
+function FormSection({ meta, children }) {
+  return (
+    <section className="form-section">
+      <div className="form-section__head">
+        <span className="form-section__index tnum">{meta.index}</span>
+        <div>
+          <h2 className="form-section__title">{meta.title}</h2>
+          <p className="form-section__hint">{meta.hint}</p>
+        </div>
+      </div>
+      <div className="form-section__grid">{children}</div>
+    </section>
+  );
+}
+
+function Field({ label, hint, input, full }) {
+  return (
+    <div className={`field${full ? " field--full" : ""}`}>
+      <label className="field__label" htmlFor={input.props.id}>
+        {label}
+      </label>
+      {input}
+      {hint && <span className="field__hint">{hint}</span>}
+    </div>
+  );
+}
+
+function Slider({ id, name, value, onChange, min, max, step, display, ticks }) {
+  const percent = ((Number(value) - min) / (max - min)) * 100;
+  return (
+    <div className="slider">
+      <div className="slider__row">
+        <input
+          id={id}
+          name={name}
+          type="range"
+          value={value}
+          onChange={onChange}
+          min={min}
+          max={max}
+          step={step}
+          className="slider__input"
+          style={{ "--fill": `${percent}%` }}
+        />
+        <output className="slider__value tnum">{display}</output>
+      </div>
+      <div className="slider__ticks">
+        {ticks.map((tick) => (
+          <span key={tick}>{tick}</span>
+        ))}
+      </div>
     </div>
   );
 }
