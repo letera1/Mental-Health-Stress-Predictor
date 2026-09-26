@@ -353,12 +353,11 @@ textarea::placeholder {
   position: sticky;
   top: 0;
   z-index: 30;
-  padding: var(--space-5) var(--space-8);
   border-bottom: 1px solid var(--border);
   background: var(--bg-surface);
 }
 
-/* Matches .page width so the title lines up with the content below it. */
+/* Same max-width AND padding as .page, so the title lines up with the content below it. */
 .page-head__inner {
   display: flex;
   align-items: center;
@@ -367,6 +366,7 @@ textarea::placeholder {
   width: 100%;
   max-width: var(--page-max, var(--content-max));
   margin: 0 auto;
+  padding: var(--space-5) var(--space-8);
 }
 
 .page-head__title {
@@ -497,13 +497,10 @@ textarea::placeholder {
     padding: var(--space-6) var(--space-4) var(--space-12);
   }
 
-  .page-head {
-    padding: var(--space-4);
-  }
-
   .page-head__inner {
     flex-direction: column;
     align-items: stretch;
     gap: var(--space-3);
+    padding: var(--space-4);
   }
 }
