@@ -139,7 +139,7 @@ export default function Sidebar() {
           aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
           aria-expanded={mobileOpen}
         >
-          {mobileOpen ? <FiX className="size-[18px]" /> : <FiMenu className="size-[18px]" />}
+          {mobileOpen ? <FiX className="size-4.5" /> : <FiMenu className="size-4.5" />}
         </button>
         <span className="flex items-center gap-2 font-display text-[15px] font-semibold text-strong">
           <BrandMark compact />
@@ -173,7 +173,7 @@ export default function Sidebar() {
             className="ml-auto grid size-8 place-items-center rounded-md text-muted hover:bg-subtle hover:text-strong lg:hidden"
             aria-label="Close navigation"
           >
-            <FiX className="size-[17px]" />
+            <FiX className="size-4.25" />
           </button>
         </div>
 
@@ -198,7 +198,7 @@ export default function Sidebar() {
                         }`
                       }
                     >
-                      <Icon className="size-[17px] shrink-0" aria-hidden="true" />
+                      <Icon className="size-4.25 shrink-0" aria-hidden="true" />
                       <span className="truncate">{label}</span>
                     </NavLink>
                   </li>

@@ -50,7 +50,7 @@ export default function ResultCard({ prediction, confidence, probabilities }) {
 
       <header className="flex flex-wrap items-center gap-4 border-b border-line-subtle px-5 py-5 sm:px-6">
         <span className={join("grid size-11 shrink-0 place-items-center rounded-xl", tone.badge)}>
-          <Icon className="size-[21px]" aria-hidden="true" />
+          <Icon className="size-5.25" aria-hidden="true" />
         </span>
         <div>
           <Eyebrow>Assessment result</Eyebrow>

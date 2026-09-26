@@ -56,12 +56,12 @@ export default function Dashboard() {
           description="Your private assessment history, stored only on this device."
         />
         <PageContent>
-          <div className="grid min-h-[460px] place-items-center rounded-2xl border border-dashed border-line-strong bg-surface px-5 py-16 text-center">
+          <div className="grid min-h-115 place-items-center rounded-2xl border border-dashed border-line-strong bg-surface px-5 py-16 text-center">
             <div className="flex max-w-lg flex-col items-center">
               <span className="grid size-14 place-items-center rounded-xl bg-accent-soft text-accent-ink">
                 <FiActivity className="size-6" aria-hidden="true" />
               </span>
-              <h2 className="mt-6 font-display text-2xl font-semibold tracking-[-0.025em] text-strong">
+              <h2 className="mt-6 font-display text-2xl font-semibold tracking-tight text-strong">
                 No assessments yet
               </h2>
               <p className="mt-3 text-sm leading-7 text-muted sm:text-base">
@@ -149,7 +149,7 @@ export default function Dashboard() {
               title="Stress and sleep over time"
               description={`Last ${trend.length} assessment${trend.length === 1 ? "" : "s"}`}
             />
-            <div className="h-[300px] min-w-0 px-2 py-5 sm:px-5">
+            <div className="h-75 min-w-0 px-2 py-5 sm:px-5">
               {trend.length < 2 ? (
                 <div className="grid h-full place-items-center px-4 text-center text-sm text-muted">
                   Complete at least two assessments to see a trend line.

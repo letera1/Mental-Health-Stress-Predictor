@@ -106,7 +106,7 @@ export default function Predict() {
         }
       />
 
-      <PageContent className="max-w-[1040px] space-y-6">
+      <PageContent className="max-w-260 space-y-6">
         {result && (
           <div ref={resultRef} className="scroll-mt-48 lg:scroll-mt-24">
             <ResultCard
@@ -119,7 +119,7 @@ export default function Predict() {
 
         {error && (
           <div className="flex items-start gap-3 rounded-xl border border-danger/60 bg-danger-soft px-4 py-3.5 text-sm text-strong" role="alert">
-            <FiAlertCircle className="mt-0.5 size-[18px] shrink-0 text-danger" aria-hidden="true" />
+            <FiAlertCircle className="mt-0.5 size-4.5 shrink-0 text-danger" aria-hidden="true" />
             <p>{error}</p>
           </div>
         )}

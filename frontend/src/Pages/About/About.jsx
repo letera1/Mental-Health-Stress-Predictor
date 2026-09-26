@@ -111,7 +111,7 @@ export default function About() {
             {PILLARS.map(({ icon: Icon, title, body }) => (
               <Card key={title} as="article" className="p-5 transition hover:border-line-strong hover:shadow-sm sm:p-6">
                 <span className="grid size-10 place-items-center rounded-lg border border-accent/15 bg-accent-soft text-accent-ink">
-                  <Icon className="size-[18px]" aria-hidden="true" />
+                  <Icon className="size-4.5" aria-hidden="true" />
                 </span>
                 <h3 className="mt-5 text-sm font-semibold text-strong">{title}</h3>
                 <p className="mt-2 text-sm leading-6 text-muted">{body}</p>

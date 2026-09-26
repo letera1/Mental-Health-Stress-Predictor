@@ -132,7 +132,7 @@ export default function Settings() {
                           selected ? "scale-100 opacity-100" : "scale-75 opacity-0"
                         )}
                       >
-                        <FiCheck className="size-3 stroke-[3]" aria-hidden="true" />
+                        <FiCheck className="size-3 stroke-3" aria-hidden="true" />
                       </span>
                     </span>
                   </button>

@@ -141,7 +141,7 @@ export default function Resource() {
               >
                 <div className="flex items-start justify-between gap-3">
                   <span className="grid size-10 place-items-center rounded-lg bg-accent-soft text-accent-ink">
-                    <Icon className="size-[18px]" aria-hidden="true" />
+                    <Icon className="size-4.5" aria-hidden="true" />
                   </span>
                   <Badge>{short}</Badge>
                 </div>
@@ -186,7 +186,7 @@ export default function Resource() {
 
         <aside className="flex gap-4 rounded-xl border border-warning/50 bg-warning-soft px-5 py-5 sm:items-center sm:px-6">
           <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-surface/70 text-warning">
-            <FiPhone className="size-[18px]" aria-hidden="true" />
+            <FiPhone className="size-4.5" aria-hidden="true" />
           </span>
           <div>
             <h2 className="text-sm font-semibold text-strong">If someone is in immediate danger</h2>
