@@ -1,11 +1,28 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Sidebar from "./Components/Sidebar/Sidebar";
-import Dashboard from "./Pages/Dashboard/Dashboard";
-import Predict from "./Pages/predict/Predict";
-import About from "./Pages/About/About";
-import Resource from "./Pages/resource/Resource";
-import Settings from "./Pages/Settings/Settings";
 import { ThemeProvider } from "./theme/ThemeProvider";
+
+const Dashboard = lazy(() => import("./Pages/Dashboard/Dashboard"));
+const Predict = lazy(() => import("./Pages/predict/Predict"));
+const About = lazy(() => import("./Pages/About/About"));
+const Resource = lazy(() => import("./Pages/resource/Resource"));
+const Settings = lazy(() => import("./Pages/Settings/Settings"));
+
+function RouteFallback() {
+  return (
+    <div className="animate-pulse">
+      <div className="h-20 border-b border-line bg-surface" />
+      <div className="space-y-4 p-4 sm:p-6 lg:p-8">
+        <div className="h-28 rounded-xl bg-muted-surface" />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="h-52 rounded-xl bg-muted-surface" />
+          <div className="h-52 rounded-xl bg-muted-surface" />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function App() {
   return (
@@ -14,15 +31,17 @@ function App() {
         <div className="flex min-h-screen bg-canvas text-body">
           <Sidebar />
           <main className="min-w-0 flex-1 pt-14 lg:pt-0">
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/predict" element={<Predict />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/resources" element={<Resource />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
+            <Suspense fallback={<RouteFallback />}>
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/predict" element={<Predict />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/resources" element={<Resource />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </Suspense>
           </main>
         </div>
       </Router>
