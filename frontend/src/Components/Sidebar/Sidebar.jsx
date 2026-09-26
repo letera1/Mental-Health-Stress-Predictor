@@ -36,7 +36,7 @@ const SECTIONS = [
   },
 ];
 
-const clampWidth = (value) => Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, value));
+const clampWidth = (value) => Math.round(Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, value)));
 
 function readWidth() {
   try {
