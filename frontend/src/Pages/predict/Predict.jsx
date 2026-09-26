@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FiAlertCircle, FiArrowRight, FiLoader } from "react-icons/fi";
 import ResultCard from "../../Components/ResultCard/ResultCard";
 import { Card, Eyebrow, Page, PageContent, PageHeader } from "../../Components/ui/primitives";
@@ -33,6 +33,7 @@ export default function Predict() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const resultRef = useRef(null);
 
   const completion = useMemo(() => {
     const keys = Object.keys(EMPTY_FORM);
@@ -44,6 +45,10 @@ export default function Predict() {
     const { name, value } = event.target;
     setForm((current) => ({ ...current, [name]: value }));
   };
+
+  useEffect(() => {
+    if (result) resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [result]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -76,7 +81,6 @@ export default function Predict() {
         confidence: data.confidence ?? null,
         inputs: payload,
       });
-      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch {
       setError("Cannot reach the assessment service. Start the Flask backend on port 5001.");
     } finally {
@@ -104,11 +108,13 @@ export default function Predict() {
 
       <PageContent className="max-w-[1040px] space-y-6">
         {result && (
-          <ResultCard
-            prediction={result.prediction}
-            confidence={result.confidence}
-            probabilities={result.probabilities}
-          />
+          <div ref={resultRef} className="scroll-mt-48 lg:scroll-mt-24">
+            <ResultCard
+              prediction={result.prediction}
+              confidence={result.confidence}
+              probabilities={result.probabilities}
+            />
+          </div>
         )}
 
         {error && (
@@ -130,6 +136,7 @@ export default function Predict() {
                 required
                 min="17"
                 max="45"
+                aria-describedby="Age-hint"
                 className={INPUT_CLASS}
                 placeholder="e.g. 21"
               />
@@ -145,6 +152,7 @@ export default function Predict() {
                 step="0.01"
                 min="1"
                 max="4"
+                aria-describedby="GPA-hint"
                 className={INPUT_CLASS}
                 placeholder="e.g. 3.20"
               />
@@ -160,7 +168,7 @@ export default function Predict() {
           </FormSection>
 
           <FormSection meta={SECTIONS[1]}>
-            <Field label="Perceived stress" full hint="1 = minimal, 5 = overwhelming">
+            <Field label="Perceived stress" htmlFor="Stress_Level" full hint="1 = minimal, 5 = overwhelming">
               <Slider
                 id="Stress_Level"
                 name="Stress_Level"
@@ -171,6 +179,7 @@ export default function Predict() {
                 step={1}
                 display={`${form.Stress_Level} / 5`}
                 ticks={["Minimal", "Moderate", "Overwhelming"]}
+                ariaDescribedBy="Stress_Level-hint"
               />
             </Field>
             <Field label="Anxiety score" htmlFor="Anxiety_Score" hint="GAD-7 scale, 0 to 21">
@@ -183,6 +192,7 @@ export default function Predict() {
                 required
                 min="0"
                 max="21"
+                aria-describedby="Anxiety_Score-hint"
                 className={INPUT_CLASS}
                 placeholder="0-21"
               />
@@ -197,6 +207,7 @@ export default function Predict() {
                 required
                 min="0"
                 max="27"
+                aria-describedby="Depression_Score-hint"
                 className={INPUT_CLASS}
                 placeholder="0-27"
               />
@@ -215,6 +226,7 @@ export default function Predict() {
                 step="0.5"
                 min="3"
                 max="9"
+                aria-describedby="Sleep_Hours-hint"
                 className={INPUT_CLASS}
                 placeholder="e.g. 7"
               />
@@ -230,6 +242,7 @@ export default function Predict() {
                 min="2000"
                 max="12000"
                 step="100"
+                aria-describedby="Steps_Per_Day-hint"
                 className={INPUT_CLASS}
                 placeholder="e.g. 6000"
               />
@@ -246,7 +259,7 @@ export default function Predict() {
                 grid
               />
             </Field>
-            <Field label="Overall sentiment" full hint="Your general outlook over the past week">
+            <Field label="Overall sentiment" htmlFor="Sentiment_Score" full hint="Your general outlook over the past week">
               <Slider
                 id="Sentiment_Score"
                 name="Sentiment_Score"
@@ -257,6 +270,7 @@ export default function Predict() {
                 step={0.1}
                 display={Number(form.Sentiment_Score).toFixed(1)}
                 ticks={["Negative", "Neutral", "Positive"]}
+                ariaDescribedBy="Sentiment_Score-hint"
               />
             </Field>
           </FormSection>
@@ -314,7 +328,11 @@ function Field({ label, htmlFor, hint, children, full = false }) {
         {label}
       </label>
       {children}
-      {hint && <span className="mt-2 block text-xs text-faint">{hint}</span>}
+      {hint && (
+        <span id={`${htmlFor}-hint`} className="mt-2 block text-xs text-faint">
+          {hint}
+        </span>
+      )}
     </div>
   );
 }
@@ -342,7 +360,7 @@ function ChoiceGroup({ name, value, options, onChange, grid = false }) {
   );
 }
 
-function Slider({ id, name, value, onChange, min, max, step, display, ticks }) {
+function Slider({ id, name, value, onChange, min, max, step, display, ticks, ariaDescribedBy }) {
   const percent = ((Number(value) - min) / (max - min)) * 100;
   return (
     <div>
@@ -356,6 +374,7 @@ function Slider({ id, name, value, onChange, min, max, step, display, ticks }) {
           min={min}
           max={max}
           step={step}
+          aria-describedby={ariaDescribedBy}
           className="h-1.5 min-w-0 flex-1 cursor-pointer appearance-none rounded-full outline-none focus-visible:ring-2 focus-visible:ring-accent/20 [&::-moz-range-thumb]:size-5 [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-accent [&::-moz-range-thumb]:bg-surface [&::-webkit-slider-thumb]:size-5 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-accent [&::-webkit-slider-thumb]:bg-surface [&::-webkit-slider-thumb]:shadow-sm"
           style={{
             background: `linear-gradient(to right, var(--accent) 0%, var(--accent) ${percent}%, var(--bg-muted) ${percent}%, var(--bg-muted) 100%)`,

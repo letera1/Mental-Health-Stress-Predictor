@@ -68,7 +68,13 @@ export default function Sidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [width, setWidth] = useState(readWidth);
   const drag = useRef(null);
+  const menuButton = useRef(null);
   const { theme, toggleTheme } = useTheme();
+
+  const closeMobile = ({ restoreFocus = false } = {}) => {
+    setMobileOpen(false);
+    if (restoreFocus) window.requestAnimationFrame(() => menuButton.current?.focus());
+  };
 
   const persistWidth = (nextWidth) => {
     const clamped = clampWidth(nextWidth);
@@ -126,6 +132,7 @@ export default function Sidebar() {
     <>
       <header className="fixed inset-x-0 top-0 z-50 flex h-14 items-center gap-3 border-b border-line bg-surface px-4 lg:hidden">
         <button
+          ref={menuButton}
           type="button"
           onClick={() => setMobileOpen((open) => !open)}
           className="grid size-9 place-items-center rounded-lg border border-line text-muted transition hover:bg-subtle hover:text-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
@@ -144,7 +151,7 @@ export default function Sidebar() {
         <button
           type="button"
           className="fixed inset-0 z-40 bg-slate-950/55 backdrop-blur-[2px] lg:hidden"
-          onClick={() => setMobileOpen(false)}
+          onClick={() => closeMobile({ restoreFocus: true })}
           aria-label="Close navigation"
         />
       )}
@@ -162,7 +169,7 @@ export default function Sidebar() {
           </span>
           <button
             type="button"
-            onClick={() => setMobileOpen(false)}
+            onClick={() => closeMobile({ restoreFocus: true })}
             className="ml-auto grid size-8 place-items-center rounded-md text-muted hover:bg-subtle hover:text-strong lg:hidden"
             aria-label="Close navigation"
           >
@@ -182,7 +189,7 @@ export default function Sidebar() {
                     <NavLink
                       to={to}
                       end={end}
-                      onClick={() => setMobileOpen(false)}
+                      onClick={() => closeMobile()}
                       className={({ isActive }) =>
                         `flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
                           isActive
