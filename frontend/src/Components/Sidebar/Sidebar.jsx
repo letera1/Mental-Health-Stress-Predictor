@@ -157,10 +157,12 @@ export default function Sidebar() {
       )}
 
       <aside
-        style={{ "--sidebar-width": `${width}px` }}
-        className={`fixed inset-y-0 left-0 z-50 flex w-[min(86vw,18rem)] shrink-0 flex-col border-r border-line bg-surface transition-transform duration-200 lg:sticky lg:top-0 lg:h-screen lg:w-(--sidebar-width) lg:translate-x-0 ${
-          mobileOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full"
-        }`}
+        style={{
+          "--sidebar-width": `${width}px`,
+          "--drawer-x": mobileOpen ? "0%" : "-100%",
+        }}
+        data-state={mobileOpen ? "open" : "closed"}
+        className="fixed inset-y-0 left-0 z-50 flex w-[min(86vw,18rem)] translate-x-(--drawer-x) shrink-0 flex-col border-r border-line bg-surface transition-transform duration-200 data-[state=open]:shadow-2xl lg:sticky lg:top-0 lg:h-screen lg:w-(--sidebar-width) lg:translate-x-0"
       >
         <div className="flex h-16 shrink-0 items-center gap-3 border-b border-line-subtle px-5">
           <BrandMark />
