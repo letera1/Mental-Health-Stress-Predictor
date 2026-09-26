@@ -108,9 +108,7 @@ function Sidebar() {
             {theme === "dark" ? <FiSun aria-hidden="true" /> : <FiMoon aria-hidden="true" />}
             <span>{theme === "dark" ? "Light mode" : "Dark mode"}</span>
           </button>
-          <p className="sidebar__note">
-            Assessments run in memory. Nothing is sent to a server for storage.
-          </p>
+          <p className="sidebar__note">Private by design &mdash; nothing is stored on a server.</p>
         </div>
       </aside>
     </>

@@ -288,9 +288,9 @@ strong {
 /* Small uppercase label used above values and section groups */
 .eyebrow {
   font-family: var(--font-sans);
-  font-size: var(--fs-2xs);
+  font-size: var(--fs-xs);
   font-weight: var(--fw-semibold);
-  letter-spacing: var(--ls-widest);
+  letter-spacing: var(--ls-wide);
   text-transform: uppercase;
   color: var(--text-muted);
 }

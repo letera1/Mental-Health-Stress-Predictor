@@ -160,7 +160,13 @@
 .link-card__name svg {
   width: 14px;
   height: 14px;
-  color: var(--text-faint);
+  color: var(--text-muted);
+  transition: color var(--t-fast), transform var(--t-fast);
+}
+
+.link-card:hover .link-card__name svg {
+  color: var(--accent-text);
+  transform: translate(1px, -1px);
 }
 
 .link-card__desc {
