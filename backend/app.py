@@ -173,6 +173,7 @@ def _normalize_payload(data):
 
 
 @app.route("/health", methods=["GET"])
+@app.route("/api/health", methods=["GET"])
 def health():
     return jsonify(
         {
@@ -198,19 +199,30 @@ def predict():
     try:
         payload = request.get_json(silent=True)
         normalized = _normalize_payload(payload)
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
 
+    try:
         # Create DataFrame with strict column ordering expected by the pipeline.
         input_data = pd.DataFrame([normalized], columns=FEATURES)
 
         # Make prediction (model handles preprocessing internally)
         pred = int(model.predict(input_data)[0])
-        label_map = {0: "Healthy", 1: "At Risk", 2: "Struggling"}
-        return jsonify({"prediction": pred, "label": label_map.get(pred, "Unknown")})
+        response = {"prediction": pred, "label": LABELS.get(pred, "Unknown")}
 
-    except ValueError as exc:
-        return jsonify({"error": str(exc)}), 400
-    except Exception as exc:
-        return jsonify({"error": str(exc)}), 400
+        if hasattr(model, "predict_proba"):
+            proba = model.predict_proba(input_data)[0]
+            classes = [int(c) for c in model.classes_]
+            response["probabilities"] = {
+                LABELS.get(cls, str(cls)): round(float(p), 4) for cls, p in zip(classes, proba)
+            }
+            response["confidence"] = round(float(max(proba)), 4)
+
+        return jsonify(response)
+
+    except Exception:
+        app.logger.error("Prediction failed:\n%s", traceback.format_exc())
+        return jsonify({"error": "Prediction failed. Please try again."}), 500
 
 
 @app.route('/<path:path>', methods=['GET'])
