@@ -65,6 +65,7 @@ export default function About() {
 
       <div className="page about__body">
         <section className="intro">
+          <p className="eyebrow">Our approach</p>
           <h2 className="intro__title">
             Mental health screening should be immediate, private, and honest about uncertainty.
           </h2>
