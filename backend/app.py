@@ -1,3 +1,5 @@
+import os
+import traceback
 from pathlib import Path
 
 import joblib
@@ -13,13 +15,16 @@ This module serves as the entry point for the Flask-based REST API.
 It handles bridging the React frontend with the Scikit-Learn Ensemble Model.
 
 Endpoints:
-    - GET /        : Health check
-    - POST /predict: Inference endpoint expecting JSON data
+    - GET  /health      : Liveness + model status
+    - POST /predict     : Inference endpoint expecting JSON data
+    - POST /api/predict : Same handler, used by the Vite dev proxy
 =============================================================================
 """
 
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
+
+LABELS = {0: "Healthy", 1: "At Risk", 2: "Struggling"}
 
 FEATURES = [
     "Age", "Gender", "GPA", "Stress_Level", "Anxiety_Score", "Depression_Score",
@@ -35,6 +40,18 @@ NUMERIC_FIELDS = {
     "Sleep_Hours",
     "Steps_Per_Day",
     "Sentiment_Score",
+}
+
+# Bounds mirror the training data; anything outside is extrapolation, not a prediction.
+NUMERIC_RANGES = {
+    "Age": (17, 45),
+    "GPA": (1.0, 4.0),
+    "Stress_Level": (1, 5),
+    "Anxiety_Score": (0, 21),
+    "Depression_Score": (0, 27),
+    "Sleep_Hours": (3, 9),
+    "Steps_Per_Day": (2000, 12000),
+    "Sentiment_Score": (-1.0, 1.0),
 }
 
 GENDER_MAP = {
@@ -98,7 +115,13 @@ def _load_model():
 model, loaded_model_name = _load_model()
 
 app = Flask(__name__)
-CORS(app)
+
+# Same-origin in Docker; the allowlist only matters for the split dev setup.
+_origins = os.environ.get("CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
+CORS(
+    app,
+    resources={r"/api/*": {"origins": [o.strip() for o in _origins.split(",") if o.strip()]}},
+)
 
 
 def _normalize_payload(data):
@@ -117,7 +140,16 @@ def _normalize_payload(data):
             raise ValueError(f"Field '{field}' cannot be empty")
 
         if field in NUMERIC_FIELDS:
-            normalized[field] = float(value)
+            try:
+                number = float(value)
+            except (TypeError, ValueError):
+                raise ValueError(f"Field '{field}' must be a number")
+
+            low, high = NUMERIC_RANGES[field]
+            if not low <= number <= high:
+                raise ValueError(f"Field '{field}' must be between {low} and {high}")
+
+            normalized[field] = number
             continue
 
         if field == "Gender":
