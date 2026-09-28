@@ -1,480 +1,244 @@
-# 🧠 MindCare AI - Mental Health Assessment Platform
-
 <div align="center">
 
-![Status](https://img.shields.io/badge/Status-Active-success)
-![Python](https://img.shields.io/badge/Python-3.8%2B-blue?logo=python)
-![React](https://img.shields.io/badge/Frontend-React%2019-61DAFB?logo=react)
-![Flask](https://img.shields.io/badge/Backend-Flask%203.0-000000?logo=flask)
-![Docker](https://img.shields.io/badge/Deployment-Docker-2496ED?logo=docker&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green)
+# MindCare
 
-**An intelligent mental health assessment platform powered by Ensemble Machine Learning with modern, beautiful UI/UX.**
+**A privacy-first mental wellness screening experience for students.**
 
-[Features](#-key-features) •
-[Demo](#-screenshots) •
-[Installation](#-installation) •
-[Docker](#-docker-deployment) •
-[Usage](#-usage) •
-[API](#-api-documentation)
+[![CI](https://github.com/letera1/Mental-Health-Stress-Predictor/actions/workflows/ci.yml/badge.svg)](https://github.com/letera1/Mental-Health-Stress-Predictor/actions/workflows/ci.yml)
+[![Docker](https://img.shields.io/docker/pulls/tuta699/mental-health-stress-detector?logo=docker)](https://hub.docker.com/r/tuta699/mental-health-stress-detector)
+[![Version](https://img.shields.io/badge/version-3.0.0-0f766e)](CHANGELOG.md)
+[![License](https://img.shields.io/badge/license-MIT-334155)](LICENSE)
+
+[Get started](#quick-start) | [Architecture](docs/ARCHITECTURE.md) | [API](backend/docs/API.md) | [Docker](docs/DEPLOYMENT.md) | [Contributing](CONTRIBUTING.md)
 
 </div>
 
----
+> [!IMPORTANT]
+> MindCare is an educational screening aid, not a medical device, diagnosis, or
+> substitute for professional care. If someone is in immediate danger, call
+> emergency services. In the United States, call or text **988**.
 
-## 📖 Overview
+## Overview
 
-**MindCare AI** is a cutting-edge web application designed to provide preliminary mental health assessments for students. By leveraging an **Ensemble Soft Voting Classifier**, the system analyzes varied inputs—ranging from sleep patterns to academic performance—to predict potential stress levels and mental health states with high accuracy.
+MindCare combines a responsive React interface with a Flask inference API and a
+soft-voting scikit-learn ensemble. A ten-field assessment returns a risk label,
+model confidence, class probabilities, practical next steps, and links to
+trusted support resources.
 
-### ✨ What's New in v2.0
+The API is stateless. Assessment history is optional and stays in the browser's
+local storage; it is never persisted by the server.
 
-- 📊 **Interactive Dashboard** with real-time analytics and charts
-- 🎨 **Completely Redesigned UI/UX** with modern dark theme
-- 📈 **Data Visualizations** using Recharts (line, bar, radar, pie charts)
-- ✨ **Smooth Animations** powered by Framer Motion
-- 📱 **Fully Responsive** design for all devices
-- 🎯 **Better User Experience** with improved navigation and interactions
+## Highlights
 
-Note: *This tool provides algorithm-based insights and is **not** a substitute for professional medical advice.*
+- **Private by design** - no accounts, tracking, or server-side assessment history.
+- **Validated inference contract** - strict types, categories, and training-range bounds.
+- **Transparent results** - class label, confidence, and probability distribution.
+- **Real dashboard data** - trends are built from assessments on the current device.
+- **Accessible responsive UI** - phone, tablet, desktop, light/dark themes, keyboard navigation.
+- **Production container** - multi-stage build, non-root runtime, Gunicorn, health checks.
+- **Automated quality gates** - Ruff, Pytest, ESLint, npm audit, Vite build, and Docker build.
 
----
+## Technology
 
-## 🚀 Key Features
+| Layer | Technology |
+| --- | --- |
+| Frontend | React 19, Vite 7, Tailwind CSS 4, Recharts |
+| Backend | Python 3.11, Flask 3, Gunicorn |
+| Machine learning | scikit-learn 1.6, pandas, joblib |
+| Testing and linting | Pytest, Ruff, ESLint |
+| Delivery | Docker, Docker Compose, GitHub Actions, Dependabot |
 
-### 🛡️ Privacy-First Design
-- **Zero Data Storage**: No personal information is ever saved
-- **Stateless Processing**: All assessments are processed in real-time
-- **Anonymous**: No user accounts or tracking required
+## Architecture
 
-### 🤖 Advanced AI Technology
-- **Ensemble Learning**: Combines 5 ML algorithms for robust predictions
-  - Random Forest
-  - Extra Trees
-  - Linear SVC
-  - K-Nearest Neighbors
-  - Decision Tree
-- **Soft Voting**: Averages probabilities for more accurate results
-- **Scikit-Learn 1.6.1**: Latest ML framework
-
-### 📊 Comprehensive Dashboard
-- **Weekly Trends**: Track mood, energy, and sleep patterns
-- **Wellness Breakdown**: Radar chart showing mental, physical, emotional, social, and academic health
-- **Stress Visualization**: Bar charts displaying stress levels over time
-- **Contributing Factors**: Visual breakdown of factors affecting mental health
-- **Activity Timeline**: Recent assessments and activities
-
-### 🎨 Modern UI/UX
-- **Dark Theme**: Easy on the eyes with calming purple/blue gradients
-- **Smooth Animations**: Framer Motion for delightful interactions
-- **Responsive Design**: Perfect on desktop, tablet, and mobile
-- **Intuitive Navigation**: Clear structure with active state indicators
-- **Accessibility**: WCAG-compliant color contrasts and semantic HTML
-
-### ⚡ Real-Time Assessment
-- **Quick Form**: Complete in 2-3 minutes
-- **Instant Results**: Get predictions immediately
-- **Personalized Recommendations**: Tailored advice based on results
-- **Resource Links**: Direct access to mental health support
-
----
-
-## 🏗 System Architecture
-
-```
-MindCare/
-├── backend/                    # Flask API Server
-│   ├── app.py                 # Main API application
-│   ├── models/                # Trained ML models (.pkl)
-│   ├── data/                  # Training datasets
-│   ├── notebooks/             # Jupyter notebooks for research
-│   ├── docs/                  # API documentation
-│   └── requirements.txt       # Python dependencies
-│
-├── frontend/                   # React Application
-│   ├── src/
-│   │   ├── Components/        # Reusable UI components
-│   │   │   ├── NavBar/       # Navigation bar
-│   │   │   ├── Footer/       # Footer component
-│   │   │   └── ResultCard/   # Assessment result display
-│   │   ├── Pages/            # Application pages
-│   │   │   ├── Home/         # Landing page
-│   │   │   ├── Dashboard/    # Analytics dashboard (NEW!)
-│   │   │   ├── predict/      # Assessment form
-│   │   │   ├── resource/     # Mental health resources
-│   │   │   └── About/        # About page
-│   │   ├── App.jsx           # Main app component
-│   │   ├── main.jsx          # Entry point
-│   │   └── index.css         # Global styles
-│   ├── public/               # Static assets
-│   ├── package.json          # Node dependencies
-│   └── vite.config.js        # Vite configuration
-│
-└── README.md                  # This file
+```mermaid
+flowchart LR
+    Browser[React SPA] -->|POST /api/predict| API[Flask API]
+    API --> Validation[Input validation]
+    Validation --> Ensemble[Soft-voting model pipeline]
+    Ensemble -->|label + confidence + probabilities| Browser
+    Browser -->|optional history| Storage[(Browser localStorage)]
 ```
 
----
+The production image serves the built SPA and API from the same Flask/Gunicorn
+origin. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for boundaries and data flow.
 
-## 🛠️ Installation
+## Repository layout
 
-### Prerequisites
-- Python 3.8 or higher
-- Node.js 16 or higher
-- npm or yarn
-
-### Backend Setup
-
-1. **Navigate to backend directory**
-   ```bash
-   cd backend
-   ```
-
-2. **Create virtual environment** (recommended)
-   ```bash
-   python -m venv venv
-   ```
-
-3. **Activate virtual environment**
-   
-   Windows:
-   ```bash
-   venv\Scripts\activate
-   ```
-   
-   Mac/Linux:
-   ```bash
-   source venv/bin/activate
-   ```
-
-4. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-5. **Start the server**
-   ```bash
-   python app.py
-   ```
-   
-   Server runs on: `http://localhost:5001`
-
-### Frontend Setup
-
-1. **Navigate to frontend directory**
-   ```bash
-   cd frontend
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Start development server**
-   ```bash
-   npm run dev
-   ```
-   
-   Client runs on: `http://localhost:5173`
-
----
-
-## 🐳 Docker Deployment
-
-> ### Ready for production-style container deployment
-> One build creates a **full-stack image**: Flask backend + optimized React frontend bundle.
-
-Detailed guide: [DOCKER_OVERVIEW.md](DOCKER_OVERVIEW.md)
-
-### What you get
-
-- Single image deployment (`backend` + `frontend` together)
-- Gunicorn-powered Flask runtime
-- Built React static assets served by Flask
-- Health endpoint for container orchestration: `GET /health`
-
-### Build the Docker image
-
-From the project root:
-
-> Important:
-> - `tagname` is an example tag. Replace it with your real tag (e.g. `v2.1.0` or `latest`).
-> - The trailing `.` is required (it is the build context path).
-
-```bash
-docker build -t tuta699/mental-health-stress-detector:tagname .
+```text
+.
+|-- .github/
+|   |-- workflows/              CI and Docker publishing
+|   |-- ISSUE_TEMPLATE/         structured issue forms
+|   `-- dependabot.yml          dependency update policy
+|-- backend/
+|   |-- mindcare/               Flask package
+|   |   |-- config.py           paths and environment defaults
+|   |   |-- inference.py        model loading and prediction
+|   |   |-- routes.py           API and SPA routes
+|   |   `-- schema.py           request validation
+|   |-- models/                 serialized model artifacts
+|   |-- tests/                  API and schema tests
+|   |-- notebooks/              offline research and training
+|   |-- app.py                  local/Gunicorn entry point
+|   `-- requirements*.txt       runtime and development dependencies
+|-- frontend/
+|   |-- src/
+|   |   |-- app/                router and application shell
+|   |   |-- components/         reusable assessment, layout, and UI components
+|   |   |-- pages/              lazy-loaded route pages
+|   |   |-- providers/          theme provider
+|   |   |-- lib/                domain and browser-storage helpers
+|   |   `-- styles/             Tailwind entry point and theme tokens
+|   `-- package.json
+|-- docs/                       architecture, development, deployment
+|-- scripts/                    local check, dev, and release automation
+|-- Dockerfile
+|-- docker-compose.yml
+|-- pyproject.toml
+`-- VERSION
 ```
 
-### Run locally with Docker
+## Quick start
 
-```bash
-docker run -d --name mindcare-app -p 5001:5001 tuta699/mental-health-stress-detector:tagname
+### Requirements
+
+- Python 3.11 or newer
+- Node.js 22 or newer
+- npm 10 or newer
+
+### Install
+
+```powershell
++git clone https://github.com/letera1/Mental-Health-Stress-Predictor.git
++cd Mental-Health-Stress-Predictor
++
++python -m venv .venv
++.\.venv\Scripts\python.exe -m pip install -r backend\requirements-dev.txt
++
++cd frontend
++npm ci
++cd ..
 ```
 
-If you get a “name is already in use” error, remove the old container and re-run:
+### Run
 
-```bash
-docker rm -f mindcare-app
+```powershell
++.\scripts\dev.ps1
 ```
 
-Open: `http://localhost:5001`
+Or start each service manually:
 
-### Push to Docker Hub
-
-```bash
-docker login
-docker build -t tuta699/mental-health-stress-detector:tagname .
-docker push tuta699/mental-health-stress-detector:tagname
+```powershell
++# terminal 1
++cd backend
++..\.venv\Scripts\python.exe app.py
++
++# terminal 2
++cd frontend
++npm run dev
 ```
 
-If you want to run the image from Docker Hub (without building locally), push it first, then:
+| Service | URL |
+| --- | --- |
+| Frontend | <http://localhost:5173> |
+| API | <http://127.0.0.1:5001> |
+| Health check | <http://127.0.0.1:5001/health> |
 
-```bash
-docker pull tuta699/mental-health-stress-detector:tagname
-docker run -d --name mindcare-app -p 5001:5001 tuta699/mental-health-stress-detector:tagname
-```
+This backend uses **Flask**, not FastAPI. Do not start it with Uvicorn.
 
-### Deploy with Docker Compose
-
-```bash
-docker compose up -d --build
-```
-
-Compose file: `docker-compose.yml`
-
-### Suggested tag strategy
-
-Use semantic tags for cleaner release management:
-
-```bash
-docker build -t tuta699/mental-health-stress-detector:v2.1.0 .
-docker push tuta699/mental-health-stress-detector:v2.1.0
-docker tag tuta699/mental-health-stress-detector:v2.1.0 tuta699/mental-health-stress-detector:latest
-docker push tuta699/mental-health-stress-detector:latest
-```
-
----
-
-## 🎯 Usage
-
-### Taking an Assessment
-
-1. **Open the application** at `http://localhost:5173` (local dev) or `http://localhost:5001` (Docker)
-2. **Navigate to Assessment** page from the navbar
-3. **Fill out the form** with your information:
-   - Personal info (Age, Gender, GPA)
-   - Mental health indicators (Stress, Anxiety, Depression scores)
-   - Lifestyle factors (Sleep hours, Physical activity)
-   - Current mood and sentiment
-4. **Submit** and receive instant results
-5. **View recommendations** and access resources
-
-### Viewing Dashboard
-
-1. **Click Dashboard** in the navigation
-2. **Explore visualizations**:
-   - Weekly mental health trends
-   - Wellness breakdown across 5 dimensions
-   - Stress level patterns
-   - Contributing factors analysis
-   - Recent activity timeline
-3. **Take actions** using quick action cards
-
----
-
-## 📊 API Documentation
-
-### Base URL
-```
-http://localhost:5001
-```
-
-### Endpoints
-
-#### Health Check
-```http
-GET /health
-```
-
-Returns:
-
-```json
-{
-   "status": "ok",
-   "model_loaded": true,
-   "model_name": "mental_health_model_ensemble_soft.pkl"
-}
-```
-
-#### Predict Mental Health Status
-```http
-POST /predict
-```
-
-Also supported (frontend-friendly):
+## API example
 
 ```http
 POST /api/predict
+Content-Type: application/json
 ```
 
-**Request Body:**
 ```json
 {
-  "Age": 20,
-   "Gender": "Male",
-  "GPA": 3.5,
-  "Stress_Level": 3,
-  "Anxiety_Score": 10,
-  "Depression_Score": 8,
-  "Sleep_Hours": 7,
-  "Steps_Per_Day": 6000,
-   "Mood_Description": "Anxious",
-  "Sentiment_Score": 0.5
+  "Age": 21,
+  "Gender": "Female",
+  "GPA": 3.2,
+  "Stress_Level": 4,
+  "Anxiety_Score": 14,
+  "Depression_Score": 16,
+  "Sleep_Hours": 5.5,
+  "Steps_Per_Day": 4200,
+  "Mood_Description": "Anxious",
+  "Sentiment_Score": -0.4
 }
 ```
 
-**Field Descriptions:**
-
-| Field | Type | Range | Description |
-|-------|------|-------|-------------|
-| Age | Integer | 17-45 | Student's age |
-| Gender | String or Integer | Female/Male/Other or 0-2 | Gender category |
-| GPA | Float | 1.0-4.0 | Grade Point Average |
-| Stress_Level | Integer | 1-5 | Self-perceived stress |
-| Anxiety_Score | Integer | 0-21 | Anxiety assessment score |
-| Depression_Score | Integer | 0-27 | Depression assessment score |
-| Sleep_Hours | Float | 3-9 | Average hours per night |
-| Steps_Per_Day | Integer | 2000-12000 | Daily physical activity |
-| Mood_Description | String or Integer | Happy/Sad/Anxious/Tired/Relaxed/Stressed/Motivated or 0-6 | Current mood state |
-| Sentiment_Score | Float | -1 to 1 | Overall sentiment |
-
-**Success Response:**
 ```json
 {
-   "prediction": 0,
-   "label": "Healthy"
+  "prediction": 2,
+  "label": "Struggling",
+  "confidence": 0.7961,
+  "probabilities": {
+    "Healthy": 0.0043,
+    "At Risk": 0.1996,
+    "Struggling": 0.7961
+  }
 }
 ```
 
-**Prediction Values:**
-- `0` = Healthy (Good mental health)
-- `1` = At Risk (Moderate concerns)
-- `2` = Struggling (Seek professional help)
+The full contract and error responses are documented in [backend/docs/API.md](backend/docs/API.md).
 
-**Error Response:**
-```json
-{
-  "error": "Missing: Age, Gender"
-}
+## Quality checks
+
+Run the complete local gate:
+
+```powershell
++.\scripts\check.ps1
 ```
 
----
+It runs:
 
-## 🧠 Model Details
+1. Ruff application lint.
+2. Pytest backend tests.
+3. ESLint frontend lint.
+4. npm production dependency audit.
+5. Vite production build.
 
-The core prediction engine uses a **Soft Voting Ensemble** approach that combines predictions from multiple classifiers:
+GitHub Actions also builds the Docker image after both application jobs pass.
 
-| Algorithm | Purpose | Weight |
-|-----------|---------|--------|
-| **Random Forest** | Generalizable baseline | Equal |
-| **Extra Trees** | Variance reduction | Equal |
-| **Linear SVC** | High-dimensional separation | Equal |
-| **KNN** | Local structure detection | Equal |
-| **Decision Tree** | Interaction capture | Equal |
+## Docker
 
-The ensemble averages the predicted probabilities of all classifiers to make the final decision, resulting in better performance than any single model alone.
+```powershell
++# Build versioned and latest tags
++.\scripts\docker-release.ps1
++
++# Run the release image
++docker run --rm -p 5001:5001 tuta699/mental-health-stress-detector:3.0.0
++```
 
-**Model Performance:**
-- Trained on student mental health dataset
-- Cross-validated for reliability
-- Optimized hyperparameters
-- Handles class imbalance
+Or use Compose:
 
----
+```powershell
++docker compose up --build -d
++docker compose ps
++```
 
-## 🎨 Design System
+See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for hardening, Docker Hub publishing,
+and GitHub release secrets.
 
-### Color Palette
+## Documentation
 
-**Primary Colors:**
-- Primary: `#6366f1` (Indigo)
-- Secondary: `#14b8a6` (Teal)
-- Accent: `#a855f7` (Purple)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Development guide](docs/DEVELOPMENT.md)
+- [Docker deployment](docs/DEPLOYMENT.md)
+- [API reference](backend/docs/API.md)
+- [Changelog](CHANGELOG.md)
+- [Security policy](SECURITY.md)
+- [Code of conduct](CODE_OF_CONDUCT.md)
 
-**Status Colors:**
-- Success: `#10b981` (Green)
-- Warning: `#f59e0b` (Amber)
-- Danger: `#ef4444` (Red)
+## Contributing
 
-**Background:**
-- Primary: `#0f172a` (Dark blue)
-- Secondary: `#1e293b` (Slate)
-- Card: `rgba(30, 41, 59, 0.8)` (Translucent)
+Read [CONTRIBUTING.md](CONTRIBUTING.md), create a focused branch, run the local
+quality gate, and open a pull request using the repository template.
 
-### Typography
-- Font Family: Inter, system fonts
-- Headings: 700-800 weight
-- Body: 400-500 weight
-- Line Height: 1.6-1.8
+Security vulnerabilities must be reported privately according to
+[SECURITY.md](SECURITY.md), not through a public issue.
 
-### Spacing
-- Base unit: 0.25rem (4px)
-- Scale: xs, sm, md, lg, xl, 2xl
+## License
 
----
-
-## 📱 Responsive Breakpoints
-
-- **Desktop**: > 1024px
-- **Tablet**: 768px - 1024px
-- **Mobile**: < 768px
-- **Small Mobile**: < 480px
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
----
-
-## ⚠️ Disclaimer
-
-**Important:** MindCare AI is designed for educational and awareness purposes only. It is **not** a substitute for professional medical advice, diagnosis, or treatment. If you're experiencing mental health concerns:
-
-- Consult with a qualified mental health professional
-- Call 988 (Suicide & Crisis Lifeline) for immediate support
-- Contact your campus counseling services
-- In emergencies, call 911
-
----
-
-## 🙏 Acknowledgments
-
-- Mental health assessment scales based on established psychological research
-- UI/UX inspiration from modern dashboard designs
-- Icons from React Icons
-- Charts powered by Recharts
-- Animations by Framer Motion
-
----
-
-<div align="center">
-
-**Made for Mental Health Awareness**
-
-[Report Bug](https://github.com/yourusername/mindcare/issues) •
-[Request Feature](https://github.com/yourusername/mindcare/issues)
-
-</div>
+MindCare is available under the [MIT License](LICENSE).
