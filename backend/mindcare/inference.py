@@ -5,7 +5,6 @@ import pandas as pd
 
 from .schema import FEATURES
 
-
 LOGGER = logging.getLogger(__name__)
 LABELS = {0: "Healthy", 1: "At Risk", 2: "Struggling"}
 
@@ -49,7 +48,7 @@ class ModelService:
             classes = [int(value) for value in self.model.classes_]
             response["probabilities"] = {
                 LABELS.get(label, str(label)): round(float(probability), 4)
-                for label, probability in zip(classes, probabilities)
+                for label, probability in zip(classes, probabilities, strict=True)
             }
             response["confidence"] = round(float(max(probabilities)), 4)
 

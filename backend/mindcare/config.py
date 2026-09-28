@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
 
-
 BACKEND_DIR = Path(__file__).resolve().parent.parent
 STATIC_DIR = BACKEND_DIR / "static"
 MODEL_DIR = BACKEND_DIR / "models"

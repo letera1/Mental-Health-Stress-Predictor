@@ -1,5 +1,4 @@
 import pytest
-
 from mindcare.schema import normalize_payload
 
 

@@ -3,7 +3,6 @@ from werkzeug.exceptions import NotFound
 
 from .schema import normalize_payload
 
-
 api = Blueprint("api", __name__)
 
 

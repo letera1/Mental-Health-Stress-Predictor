@@ -1,5 +1,4 @@
 import pytest
-
 from mindcare import create_app
 
 
