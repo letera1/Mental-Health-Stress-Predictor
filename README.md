@@ -109,33 +109,33 @@ origin. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for boundaries and data
 ### Install
 
 ```powershell
-+git clone https://github.com/letera1/Mental-Health-Stress-Predictor.git
-+cd Mental-Health-Stress-Predictor
-+
-+python -m venv .venv
-+.\.venv\Scripts\python.exe -m pip install -r backend\requirements-dev.txt
-+
-+cd frontend
-+npm ci
-+cd ..
+git clone https://github.com/letera1/Mental-Health-Stress-Predictor.git
+cd Mental-Health-Stress-Predictor
+
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r backend\requirements-dev.txt
+
+cd frontend
+npm ci
+cd ..
 ```
 
 ### Run
 
 ```powershell
-+.\scripts\dev.ps1
+.\scripts\dev.ps1
 ```
 
 Or start each service manually:
 
 ```powershell
-+# terminal 1
-+cd backend
-+..\.venv\Scripts\python.exe app.py
-+
-+# terminal 2
-+cd frontend
-+npm run dev
+# terminal 1
+cd backend
+..\.venv\Scripts\python.exe app.py
+
+# terminal 2
+cd frontend
+npm run dev
 ```
 
 | Service | URL |
@@ -188,7 +188,7 @@ The full contract and error responses are documented in [backend/docs/API.md](ba
 Run the complete local gate:
 
 ```powershell
-+.\scripts\check.ps1
+.\scripts\check.ps1
 ```
 
 It runs:
@@ -204,19 +204,19 @@ GitHub Actions also builds the Docker image after both application jobs pass.
 ## Docker
 
 ```powershell
-+# Build versioned and latest tags
-+.\scripts\docker-release.ps1
-+
-+# Run the release image
-+docker run --rm -p 5001:5001 tuta699/mental-health-stress-detector:3.0.0
-+```
+# Build versioned and latest tags
+.\scripts\docker-release.ps1
+
+# Run the release image
+docker run --rm -p 5001:5001 tuta699/mental-health-stress-detector:3.0.0
+```
 
 Or use Compose:
 
 ```powershell
-+docker compose up --build -d
-+docker compose ps
-+```
+docker compose up --build -d
+docker compose ps
+```
 
 See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for hardening, Docker Hub publishing,
 and GitHub release secrets.
