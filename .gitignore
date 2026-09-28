@@ -34,6 +34,12 @@ Thumbs.db
 # Logs
 *.log
 
+# Test and lint caches
+.coverage
+htmlcov/
+.pytest_cache/
+.ruff_cache/
+
 # Database
 *.db
 *.sqlite
