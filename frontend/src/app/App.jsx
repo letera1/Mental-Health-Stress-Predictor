@@ -1,13 +1,13 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import Sidebar from "./Components/Sidebar/Sidebar";
-import { ThemeProvider } from "./theme/ThemeProvider";
+import Sidebar from "../components/layout/Sidebar";
+import { ThemeProvider } from "../providers/theme/ThemeProvider";
 
-const Dashboard = lazy(() => import("./Pages/Dashboard/Dashboard"));
-const Predict = lazy(() => import("./Pages/predict/Predict"));
-const About = lazy(() => import("./Pages/About/About"));
-const Resource = lazy(() => import("./Pages/resource/Resource"));
-const Settings = lazy(() => import("./Pages/Settings/Settings"));
+const Dashboard = lazy(() => import("../pages/dashboard/DashboardPage"));
+const Predict = lazy(() => import("../pages/assessment/AssessmentPage"));
+const About = lazy(() => import("../pages/about/AboutPage"));
+const Resource = lazy(() => import("../pages/resources/ResourcesPage"));
+const Settings = lazy(() => import("../pages/settings/SettingsPage"));
 
 function RouteFallback() {
   return (
